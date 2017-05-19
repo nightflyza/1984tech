@@ -136,10 +136,20 @@ class OrwellWorld {
         $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };'."\n";
+                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };' . "\n";
             }
         }
         return ($result);
+    }
+
+    /**
+     * Rewrites isc-bind zones files
+     * 
+     * @return void
+     */
+    public function saveBindZones() {
+        $zonesData = $this->getBindZones();
+        file_put_contents($this->dnsZonesPath, $zonesData);
     }
 
 }
