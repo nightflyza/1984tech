@@ -1,0 +1,9 @@
+$TTL 24h                                                                                                                
+                                                                                                                        
+@       IN SOA billing.isp. r00t@billing.isp. (                                                                  
+                  2017051802  86400  300  604800  3600 )                                                                
+                                                                                                                        
+@       IN      NS   billing.isp.                                                                                     
+@       IN      A    127.0.0.1
+*       IN      A    127.0.0.1
+
