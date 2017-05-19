@@ -23,6 +23,27 @@ class OrwellWorld {
      */
     protected $domainsList = array();
 
+    /**
+     * Contains ACLs list for bind zones config
+     *
+     * @var string
+     */
+    protected $dnsAcl = '';
+
+    /**
+     * Contains path for generating DNS zones file
+     *
+     * @var string
+     */
+    protected $dnsZonesPath = '';
+
+    /**
+     * Contains bind server zone file with domain redirects
+     *
+     * @var string
+     */
+    protected $dnsRedirectsPath = '';
+
     const CONFIG_PATH = '1984tech.conf';
 
     /**
@@ -52,6 +73,9 @@ class OrwellWorld {
      */
     protected function setOptions() {
         $this->domainsFile = $this->config['DOMAINS_LIST'];
+        $this->dnsAcl = $this->config['DNS_ACL'];
+        $this->dnsZonesPath = $this->config['DNS_ZONES'];
+        $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
     }
 
     /**
@@ -98,6 +122,21 @@ class OrwellWorld {
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result.=$eachDomain . "\n";
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns isc-bind zones file
+     * 
+     * @return string
+     */
+    public function getBindZones() {
+        $result = '';
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };'."\n";
             }
         }
         return ($result);
