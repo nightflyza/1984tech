@@ -1,0 +1,66 @@
+
+body
+{
+    background-image:url('back.jpg');
+    background-color:#000000;
+    color: #FFFFFF;
+} 
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 90%;
+    width: 90%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto; 
+    width: 70%;
+
+    opacity:.80;
+    -moz-opacity:.80; 
+    filter:alpha(opacity=80); 
+    background-color:#000000;
+
+    -moz-box-shadow: 3px 3px 4px #000;
+    -webkit-box-shadow: 3px 3px 4px #000;
+    box-shadow: 3px 3px 4px #000;
+    /* For IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000')";
+    /* For IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#000000');
+}
+
+.centered {
+    text-align: center;
+}
+
+a:link { 
+    color: rgb(61, 101, 148);  
+    font-family: Tahoma,Verdana,Helvetica,sans-serif; 
+    text-decoration: none; 
+}
+
+a:active { 
+    color: rgb(61, 101, 148);  
+    font-family: Tahoma,Verdana,Helvetica,sans-serif; 
+    text-decoration: none; 
+}
+
+a:visited { 
+    color: rgb(61, 101, 148);  
+    font-family: Tahoma,Verdana,Helvetica,sans-serif; 
+    text-decoration: none; 
+}
+
+a:hover { 
+    color: rgb(45, 64, 102);  
+    font-family: Tahoma,Verdana,Helvetica,sans-serif; 
+    text-decoration: none; 
+}
