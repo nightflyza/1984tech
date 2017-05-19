@@ -10,6 +10,13 @@ class OrwellWorld {
     protected $config = array();
 
     /**
+     * Full filesystem path to 1984tech directory
+     *
+     * @var string
+     */
+    protected $basePath = '';
+
+    /**
      * Contains name of file with domains list
      *
      * @var string
@@ -72,9 +79,10 @@ class OrwellWorld {
      * @return void
      */
     protected function setOptions() {
-        $this->domainsFile = $this->config['DOMAINS_LIST'];
+        $this->basePath = $this->config['BASE_PATH'];
+        $this->domainsFile = $this->basePath . $this->config['DOMAINS_LIST'];
         $this->dnsAcl = $this->config['DNS_ACL'];
-        $this->dnsZonesPath = $this->config['DNS_ZONES'];
+        $this->dnsZonesPath = $this->basePath . $this->config['DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
     }
 
