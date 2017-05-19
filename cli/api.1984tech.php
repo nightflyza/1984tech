@@ -157,7 +157,9 @@ class OrwellWorld {
      */
     public function saveBindZones() {
         $zonesData = $this->getBindZones();
-        file_put_contents($this->dnsZonesPath, $zonesData);
+        if (!empty($this->dnsZonesPath)) {
+            file_put_contents($this->dnsZonesPath, $zonesData);
+        }
     }
 
 }
