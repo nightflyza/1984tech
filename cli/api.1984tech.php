@@ -67,7 +67,9 @@ class OrwellWorld {
                     $raw = explode("\n", $raw);
                     if (!empty($raw)) {
                         foreach ($raw as $line => $eachDomain) {
-                            $this->domainsList[$line] = $eachDomain;
+                            if (!empty($eachDomain)) {
+                                $this->domainsList[$line] = trim($eachDomain);
+                            }
                         }
                     }
                 }
@@ -84,6 +86,21 @@ class OrwellWorld {
      */
     public function getDomains() {
         return($this->domainsList);
+    }
+
+    /**
+     * Returns list of loaded domains
+     * 
+     * @return string
+     */
+    public function renderDomainsRaw() {
+        $reult = '';
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result.=$eachDomain . "\n";
+            }
+        }
+        return ($result);
     }
 
 }
