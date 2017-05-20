@@ -6,5 +6,5 @@
 
 <b>ISC-BIND domains redirect</b>
 
-#php cli/dnsgen.php
+#php cli/dnsgen
 
