@@ -51,6 +51,20 @@ class OrwellWorld {
      */
     protected $dnsRedirectsPath = '';
 
+    /**
+     * Contains DNS servers IPs
+     *
+     * @var array
+     */
+    protected $dnsServers = array();
+
+    /**
+     * DNS resolver object placeholder
+     *
+     * @var object
+     */
+    protected $resolver = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -84,6 +98,19 @@ class OrwellWorld {
         $this->dnsAcl = $this->config['DNS_ACL'];
         $this->dnsZonesPath = $this->config['DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
+        $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
+
+        if (!empty($dnsServersTmp)) {
+            $dnsServersTmp = explode(',', $dnsServersTmp);
+            if (!empty($dnsServersTmp)) {
+                foreach ($dnsServersTmp as $index => $eachServer) {
+                    $eachServer = trim($eachServer);
+                    if (!empty($eachServer)) {
+                        $this->dnsServers[] = $eachServer;
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -159,6 +186,42 @@ class OrwellWorld {
             $result = $this->basePath . $this->dnsZonesPath;
         } else {
             $result = '';
+        }
+        return ($result);
+    }
+
+    /**
+     * Initializes dns resolver object incstance for further usage
+     * 
+     * @return void
+     */
+    protected function initDnsResolver() {
+        require_once ('Net/DNS2.php');
+        $this->resolver = new Net_DNS2_Resolver(array('nameservers' => $this->dnsServers));
+    }
+
+    /**
+     * Performs DNS lookup of some domain, returns list of received IPs
+     * 
+     * @param string $domain 
+     * 
+     * @return  array
+     */
+    public function resolveDNS($domain) {
+        $result = array();
+        if (empty($this->resolver)) {
+            $this->initDnsResolver();
+        }
+
+        try {
+            $queryTmp = $this->resolver->query($domain, 'A');
+            if (!empty($queryTmp)) {
+                if (isset($queryTmp['answer'])) {
+                    
+                }
+            }
+        } catch (Exception $e) {
+            print('Fail: ' . $e . "\n");
         }
         return ($result);
     }
