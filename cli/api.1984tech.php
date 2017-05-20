@@ -65,6 +65,20 @@ class OrwellWorld {
      */
     protected $resolver = '';
 
+    /**
+     * Contains ipfw table number to push IPs
+     *
+     * @var int
+     */
+    protected $ipfwTable = 0;
+
+    /**
+     * Contains ipfw binary path
+     *
+     * @var 
+     */
+    protected $ipfwPath = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -98,6 +112,9 @@ class OrwellWorld {
         $this->dnsAcl = $this->config['DNS_ACL'];
         $this->dnsZonesPath = $this->config['DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
+        $this->ipfwPath = $this->config['IPFW_PATH'];
+        $this->ipfwTable = $this->config['IPFW_TABLE'];
+
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
         if (!empty($dnsServersTmp)) {
@@ -234,7 +251,7 @@ class OrwellWorld {
      * 
      * @return array
      */
-    public function resolveAllDomainsIps() {
+    protected function resolveAllDomainsIps() {
         $result = array();
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $domainIndex => $eachDomain) {
@@ -247,6 +264,19 @@ class OrwellWorld {
                     }
                 }
             }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns ipfw rules list
+     * 
+     * @return string
+     */
+    public function getIpfwRules() {
+        $result = '';
+        if ((!empty($this->domainsList)) AND ( !empty($this->ipfwTable)) AND ( !empty($this->ipfwPath))) {
+            
         }
         return ($result);
     }
