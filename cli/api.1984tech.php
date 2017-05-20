@@ -339,6 +339,22 @@ class OrwellWorld {
         return ($result);
     }
 
+    /**
+     * Renders list of all loaded domains IPs
+     * 
+     * @return string
+     */
+    public function renderDomainsIps() {
+        $result = '';
+        $allDomainIps = $this->resolveAllDomainsIps();
+        if (!empty($allDomainIps)) {
+            foreach ($allDomainIps as $ip => $domain) {
+                $result.=$ip . ' ' . $domain . "\n";
+            }
+        }
+        return ($result);
+    }
+
 }
 
 ?>
