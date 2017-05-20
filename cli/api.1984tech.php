@@ -208,7 +208,7 @@ class OrwellWorld {
      * 
      * @return  array
      */
-    public function resolveDNS($domain, $type = 'A') {
+    protected function getDomainIps($domain, $type = 'A') {
         $result = array();
         if (empty($this->resolver)) {
             $this->initDnsResolver();
@@ -224,7 +224,29 @@ class OrwellWorld {
                 }
             }
         } catch (Exception $e) {
-            print('Fail: ' . $e . "\n");
+            print('Fail: ' . $e->getMessage() . "\n");
+        }
+        return ($result);
+    }
+
+    /**
+     * Performs all loaded domains IPs resolving
+     * 
+     * @return array
+     */
+    public function resolveAllDomainsIps() {
+        $result = array();
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $domainIndex => $eachDomain) {
+                $domainIps = $this->getDomainIps($eachDomain);
+                if (!empty($domainIps)) {
+                    foreach ($domainIps as $domainIp => $domainName) {
+                        if (!empty($domainIp)) {
+                            $result[$domainIp] = $domainName;
+                        }
+                    }
+                }
+            }
         }
         return ($result);
     }
