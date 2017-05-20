@@ -204,20 +204,23 @@ class OrwellWorld {
      * Performs DNS lookup of some domain, returns list of received IPs
      * 
      * @param string $domain 
+     * @param string $type
      * 
      * @return  array
      */
-    public function resolveDNS($domain) {
+    public function resolveDNS($domain, $type = 'A') {
         $result = array();
         if (empty($this->resolver)) {
             $this->initDnsResolver();
         }
 
         try {
-            $queryTmp = $this->resolver->query($domain, 'A');
+            $queryTmp = $this->resolver->query($domain, $type);
             if (!empty($queryTmp)) {
-                if (isset($queryTmp['answer'])) {
-                    
+                if (!empty($queryTmp->answer)) {
+                    foreach ($queryTmp->answer as $io) {
+                        $result[$io->address] = $io->name;
+                    }
                 }
             }
         } catch (Exception $e) {
