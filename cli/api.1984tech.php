@@ -82,7 +82,7 @@ class OrwellWorld {
         $this->basePath = $this->config['BASE_PATH'];
         $this->domainsFile = $this->config['DOMAINS_LIST'];
         $this->dnsAcl = $this->config['DNS_ACL'];
-        $this->dnsZonesPath = $this->basePath . $this->config['DNS_ZONES'];
+        $this->dnsZonesPath = $this->config['DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
     }
 
@@ -149,13 +149,18 @@ class OrwellWorld {
     /**
      * Rewrites isc-bind zones files
      * 
-     * @return void
+     * @return string/void - generated filename
      */
     public function saveBindZones() {
+        $result = '';
         $zonesData = $this->getBindZones();
         if (!empty($this->dnsZonesPath)) {
-            file_put_contents($this->dnsZonesPath, $zonesData);
+            file_put_contents($this->basePath . $this->dnsZonesPath, $zonesData);
+            $result = $this->basePath . $this->dnsZonesPath;
+        } else {
+            $result = '';
         }
+        return ($result);
     }
 
 }
