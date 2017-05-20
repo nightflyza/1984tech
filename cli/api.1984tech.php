@@ -51,7 +51,7 @@ class OrwellWorld {
      */
     protected $dnsRedirectsPath = '';
 
-    const CONFIG_PATH = '1984tech.conf';
+    const CONFIG_PATH = '1984tech.ini';
 
     /**
      * Creates new object instance
