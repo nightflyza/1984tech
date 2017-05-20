@@ -25,24 +25,27 @@ if ($argc >= 2) {
                 print($tech->renderDomainsRaw());
                 break;
             case '--generate':
-                $generationResult=$tech->saveBindZones();
+                $generationResult = $tech->saveBindZones();
                 if (!empty($generationResult)) {
-                    print('Zones file '.$generationResult.' saved'."\n");
+                    print('Zones file ' . $generationResult . ' saved' . "\n");
                 } else {
-                    print('Zones generation skipped because DNS_ZONES option empty'."\n");
+                    print('Zones generation skipped because DNS_ZONES option empty' . "\n");
                 }
                 break;
             case '--help':
-                
+                print('Usage: php cli/dnsgen --option' . "\n");
+                print('Available options:'."\n");
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName.' - '.$optionDesc."\n");
+                    }
+                }
                 break;
         }
     } else {
         print('Unknown command line option: ' . $option . "\n");
     }
 
-
-//    print($tech->getBindZones());
-//    $tech->saveBindZones();
 } else {
     //option requirement notification
     print('At least one option required.' . "\n");
