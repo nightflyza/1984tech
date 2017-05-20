@@ -2,9 +2,8 @@
 1984 tech is an Orwell's world implementation for UA ISPs
 
 
-<b>Usage:</b>
+Please visit our official resources:
 
-<b>ISC-BIND domains redirect</b>
-
-#php cli/dnsgen
+  * [Documentation](http://wiki.ubilling.net.ua/doku.php?id=1984tech)
+  * [Community forums](http://local.com.ua/forum/forum/144-stargazer-ubilling/)
 
