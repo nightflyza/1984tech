@@ -79,6 +79,20 @@ class OrwellWorld {
      */
     protected $ipfwPath = '';
 
+    /**
+     * Contains ipfw variable name for scrips generation
+     *
+     * @var string
+     */
+    protected $ipfwMacro = '';
+
+    /**
+     * Contains ipfw script generation path
+     *
+     * @var string
+     */
+    protected $ipfwScriptPath = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -114,6 +128,8 @@ class OrwellWorld {
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
         $this->ipfwPath = $this->config['IPFW_PATH'];
         $this->ipfwTable = $this->config['IPFW_TABLE'];
+        $this->ipfwMacro = $this->config['IPFW_MACRO'];
+        $this->ipfwScriptPath = $this->config['IPFW_SCRIPT_PATH'];
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
@@ -199,8 +215,8 @@ class OrwellWorld {
         $result = '';
         $zonesData = $this->getBindZones();
         if (!empty($this->dnsZonesPath)) {
-            file_put_contents($this->basePath . $this->dnsZonesPath, $zonesData);
-            $result = $this->basePath . $this->dnsZonesPath;
+            file_put_contents($this->dnsZonesPath, $zonesData);
+            $result = $this->dnsZonesPath;
         } else {
             $result = '';
         }
@@ -271,12 +287,54 @@ class OrwellWorld {
     /**
      * Returns ipfw rules list
      * 
+     * @param bool $useMacro - use raw path or variable name as ipfw command
+     * 
      * @return string
      */
-    public function getIpfwRules() {
+    public function getIpfwRules($useMacro) {
         $result = '';
         if ((!empty($this->domainsList)) AND ( !empty($this->ipfwTable)) AND ( !empty($this->ipfwPath))) {
-            
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if ($useMacro) {
+                $ipfwCommand = '${' . $this->ipfwMacro . '}';
+            } else {
+                $ipfwCommand = $this->ipfwPath;
+            }
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $result.=$ipfwCommand . ' table ' . $this->ipfwTable . ' add ' . $eachIp . "\n";
+                }
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns ipfw script for table filling
+     * 
+     * @return string
+     */
+    public function getIpfwScript() {
+        $result = '#!/bin/sh' . "\n";
+        $result.=$this->ipfwMacro . '="/sbin/ipfw -q"' . "\n";
+        $result.='${' . $this->ipfwMacro . '} -f table ' . $this->ipfwTable . ' flush' . "\n";
+        $result.=$this->getIpfwRules(true);
+        return ($result);
+    }
+
+    /**
+     * Saves ipfw script
+     * 
+     * @return string/void
+     */
+    public function saveIpfwScript() {
+        $result = '';
+        $ipfwScript = $this->getIpfwScript();
+        if (!empty($this->ipfwScriptPath)) {
+            file_put_contents($this->ipfwScriptPath, $ipfwScript);
+            $result = $this->ipfwScriptPath;
+        } else {
+            $result = '';
         }
         return ($result);
     }
