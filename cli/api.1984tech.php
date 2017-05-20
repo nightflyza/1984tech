@@ -80,7 +80,7 @@ class OrwellWorld {
      */
     protected function setOptions() {
         $this->basePath = $this->config['BASE_PATH'];
-        $this->domainsFile = $this->basePath . $this->config['DOMAINS_LIST'];
+        $this->domainsFile = $this->config['DOMAINS_LIST'];
         $this->dnsAcl = $this->config['DNS_ACL'];
         $this->dnsZonesPath = $this->basePath . $this->config['DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
@@ -93,20 +93,16 @@ class OrwellWorld {
      */
     protected function loadDomains() {
         if (!empty($this->domainsFile)) {
-            if (file_exists($this->domainsFile)) {
-                $raw = file_get_contents($this->domainsFile);
+            $raw = file_get_contents($this->domainsFile);
+            if (!empty($raw)) {
+                $raw = explode("\n", $raw);
                 if (!empty($raw)) {
-                    $raw = explode("\n", $raw);
-                    if (!empty($raw)) {
-                        foreach ($raw as $line => $eachDomain) {
-                            if (!empty($eachDomain)) {
-                                $this->domainsList[$line] = trim($eachDomain);
-                            }
+                    foreach ($raw as $line => $eachDomain) {
+                        if (!empty($eachDomain)) {
+                            $this->domainsList[$line] = trim($eachDomain);
                         }
                     }
                 }
-            } else {
-                throw new Exception('EX_DOMAINS_FILE_NOT_EXISTS');
             }
         }
     }
