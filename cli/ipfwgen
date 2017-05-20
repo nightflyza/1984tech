@@ -9,6 +9,7 @@ if ($argc >= 2) {
         '--preview' => 'preview ipfw update script to stdout',
         '--resolve' => 'render IPs list of loaded domains',
         '--generate' => 'generate ipfw update script on filesystem',
+        '--tableupdate' => 'updates ipfw table with domains IPs',
         '--help' => 'show small help'
     );
 
@@ -29,6 +30,9 @@ if ($argc >= 2) {
                 } else {
                     print('ipfw script generation skipped because IPFW_SCRIPT_PATH option empty' . "\n");
                 }
+                break;
+            case '--tableupdate':
+                print($tech->ipfwTableUpdate());
                 break;
             case '--help':
                 print('Usage: php cli/ipfwgen --option' . "\n");

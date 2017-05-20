@@ -355,6 +355,27 @@ class OrwellWorld {
         return ($result);
     }
 
+    /**
+     * Updates ipfw table with domains IPs
+     * 
+     * @return string
+     */
+    public function ipfwTableUpdate() {
+        $result = '';
+        $allIpfwRules = $this->getIpfwRules(false);
+        if ((!empty($allIpfwRules)) AND ( !empty($this->ipfwTable))) {
+            $allIpfwRules = explode("\n", $allIpfwRules);
+            if (!empty($allIpfwRules)) {
+                foreach ($allIpfwRules as $io => $eachRule) {
+                    if (!empty($eachRule)) {
+                        $result.=shell_exec($eachRule);
+                    }
+                }
+            }
+        }
+        return ($result);
+    }
+
 }
 
 ?>
