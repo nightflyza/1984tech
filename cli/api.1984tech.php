@@ -107,6 +107,34 @@ class OrwellWorld {
      */
     protected $mtScriptPath = '';
 
+    /**
+     * Contains path of iptables binary
+     *
+     * @var string
+     */
+    protected $iptablesPath = '';
+
+    /**
+     * Contains iptables blocking chain
+     *
+     * @var string
+     */
+    protected $iptablesChain = '';
+
+    /**
+     * Contains ipset blacklist name
+     *
+     * @var string
+     */
+    protected $ipsetListName = '';
+
+    /**
+     * Contains ipset binary path
+     *
+     * @var string
+     */
+    protected $ipsetPath = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -146,6 +174,11 @@ class OrwellWorld {
         $this->ipfwScriptPath = $this->config['IPFW_SCRIPT_PATH'];
         $this->mtListName = $this->config['MT_LISTNAME'];
         $this->mtScriptPath = $this->config['MT_SCRIPT_PATH'];
+        $this->iptablesPath = $this->config['IPTABLES_PATH'];
+        $this->iptablesChain = $this->config['IPTABLES_CHAIN'];
+        $this->ipsetPath = $this->config['IPSET_PATH'];
+        $this->ipsetListName = $this->config['IPSET_LISTNAME'];
+
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
@@ -416,6 +449,56 @@ class OrwellWorld {
                 foreach ($allIpfwRules as $io => $eachRule) {
                     if (!empty($eachRule)) {
                         $result.=shell_exec($eachRule);
+                    }
+                }
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns ipset update script
+     * 
+     * @param bool $run
+     * 
+     * @return string
+     */
+    public function getIpsetScript($run = false) {
+        $result = '';
+        if ((!empty($this->domainsList)) AND ( !empty($this->ipsetListName)) AND ( !empty($this->ipsetPath))) {
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $template = $this->ipsetPath . ' -A ' . $this->ipsetListName . ' ' . $eachIp . "\n";
+                    if (!$run) {
+                        $result.=$template;
+                    } else {
+                        $result.=shell_exec($template);
+                    }
+                }
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns iptables update script
+     * 
+     * @param bool $run
+     * 
+     * @return string
+     */
+    public function getIptablesScript($run = false) {
+        $result = '';
+        if ((!empty($this->domainsList)) AND ( !empty($this->iptablesChain)) AND ( !empty($this->iptablesPath))) {
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $template = $this->iptablesPath . ' -A ' . $this->iptablesChain . ' -d ' . $eachIp . ' -j DROP' . "\n";
+                    if (!$run) {
+                        $result.=$template;
+                    } else {
+                        $result.=shell_exec($template);
                     }
                 }
             }

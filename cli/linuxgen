@@ -1,0 +1,55 @@
+<?php
+
+include ('api.1984tech.php');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--ipset' => 'preview ipset update script to stdout',
+        '--iptables' => 'preview iptables update script to stdout',
+        '--resolve' => 'render IPs list of loaded domains',
+        '--ipsetupdate' => 'run ipset update script',
+        '--iptablesupdate' => 'run iptables update script',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--ipset':
+                print($tech->getIpsetScript());
+                break;
+            case '--ipsetupdate':
+                print($tech->getIpsetScript(true));
+                break;
+            case '--iptables':
+                print($tech->getIptablesScript());
+                break;
+            case '--iptablesupdate':
+                print($tech->getIptablesScript(true));
+                break;
+            case '--resolve':
+                print($tech->renderDomainsIps());
+                break;
+            case '--help':
+                print('Usage: php cli/linuxgen --option' . "\n");
+                print('Available options:' . "\n");
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . "\n");
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . "\n");
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . "\n");
+    print('Usage: php cli/linuxgen --option' . "\n");
+    print('For example: php cli/linuxgen --help' . "\n");
+}
+
