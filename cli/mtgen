@@ -1,0 +1,52 @@
+<?php
+
+include ('api.1984tech.php');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--preview' => 'preview Mikrotik address list update script to stdout',
+        '--resolve' => 'render IPs list of loaded domains',
+        '--generate' => 'generate Mikrotik address list update script on filesystem',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--preview':
+                print($tech->getMikrotikScript());
+                break;
+            case '--resolve':
+                print($tech->renderDomainsIps());
+                break;
+            case '--generate':
+                $generationResult = $tech->saveMikrotikScript();
+                if (!empty($generationResult)) {
+                    print('Mikrotik update script file ' . $generationResult . ' saved' . "\n");
+                } else {
+                    print('Mikrotik script generation skipped because MT_SCRIPT_PATH option empty' . "\n");
+                }
+                break;
+            case '--help':
+                print('Usage: php cli/mtgen --option' . "\n");
+                print('Available options:' . "\n");
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . "\n");
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . "\n");
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . "\n");
+    print('Usage: php cli/mtgen --option' . "\n");
+    print('For example: php cli/mtgen --help' . "\n");
+}
+?>

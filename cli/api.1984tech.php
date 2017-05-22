@@ -93,6 +93,20 @@ class OrwellWorld {
      */
     protected $ipfwScriptPath = '';
 
+    /**
+     * Contains name of address list for Mikrotik
+     *
+     * @var string
+     */
+    protected $mtListName = '';
+
+    /**
+     * Contains path for generation of Mikrotik address-list update script
+     *
+     * @var string
+     */
+    protected $mtScriptPath = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -130,6 +144,8 @@ class OrwellWorld {
         $this->ipfwTable = $this->config['IPFW_TABLE'];
         $this->ipfwMacro = $this->config['IPFW_MACRO'];
         $this->ipfwScriptPath = $this->config['IPFW_SCRIPT_PATH'];
+        $this->mtListName = $this->config['MT_LISTNAME'];
+        $this->mtScriptPath = $this->config['MT_SCRIPT_PATH'];
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
@@ -323,6 +339,39 @@ class OrwellWorld {
     }
 
     /**
+     * Returns ipfw script for table filling
+     * 
+     * @return string
+     */
+    public function getMikrotikScript() {
+        $result = '/ip firewall address-list' . "\n";
+        if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $result.='add address=' . $eachIp . ' list=' . $this->mtListName . "\n";
+                }
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Saves mikrotik update script to filesystem
+     * 
+     * @return string/void
+     */
+    public function saveMikrotikScript() {
+        $result = '';
+        $mtScript = $this->getMikrotikScript();
+        if (!empty($this->mtScriptPath)) {
+            file_put_contents($this->mtScriptPath, $mtScript);
+            $result = $this->mtScriptPath;
+        }
+        return ($result);
+    }
+
+    /**
      * Saves ipfw script
      * 
      * @return string/void
@@ -333,8 +382,6 @@ class OrwellWorld {
         if (!empty($this->ipfwScriptPath)) {
             file_put_contents($this->ipfwScriptPath, $ipfwScript);
             $result = $this->ipfwScriptPath;
-        } else {
-            $result = '';
         }
         return ($result);
     }
