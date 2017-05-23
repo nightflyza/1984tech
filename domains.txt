@@ -25,7 +25,7 @@ n.maps.yandex.ru
 realty.yandex.ru
 news.yandex.ru
 translate.yandex.ru
-mail.yandex.ua
+mail.yandex.ru
 pdd.yandex.ru
 travel.yandex.ru
 rabota.yandex.ru
@@ -39,7 +39,6 @@ tv.yandex.ru
 telephony.yandex.ru
 tech.yandex.ru
 fotki.yandex.ru
-money.yandex.ru
 dns.yandex.ru
 browser.yandex.ru
 speechkit.yandex.ru
