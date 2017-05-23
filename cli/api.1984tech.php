@@ -204,7 +204,7 @@ class OrwellWorld {
         if (!empty($this->domainsFile)) {
             $raw = file_get_contents($this->domainsFile);
             if (!empty($raw)) {
-                $raw = explode("\n", $raw);
+                $raw = explode(PHP_EOL, $raw);
                 if (!empty($raw)) {
                     foreach ($raw as $line => $eachDomain) {
                         if (!empty($eachDomain)) {
@@ -234,7 +234,7 @@ class OrwellWorld {
         $reult = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.=$eachDomain . "\n";
+                $result.=$eachDomain . PHP_EOL;
             }
         }
         return ($result);
@@ -249,7 +249,7 @@ class OrwellWorld {
         $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };' . "\n";
+                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };' . PHP_EOL;
             }
         }
         return ($result);
@@ -306,7 +306,7 @@ class OrwellWorld {
                 }
             }
         } catch (Exception $e) {
-            print('Fail: ' . $e->getMessage() . "\n");
+            print('Fail: ' . $e->getMessage() . PHP_EOL);
         }
         return ($result);
     }
@@ -351,7 +351,7 @@ class OrwellWorld {
             }
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.=$ipfwCommand . ' table ' . $this->ipfwTable . ' add ' . $eachIp . "\n";
+                    $result.=$ipfwCommand . ' table ' . $this->ipfwTable . ' add ' . $eachIp . PHP_EOL;
                 }
             }
         }
@@ -364,9 +364,9 @@ class OrwellWorld {
      * @return string
      */
     public function getIpfwScript() {
-        $result = '#!/bin/sh' . "\n";
-        $result.=$this->ipfwMacro . '="/sbin/ipfw -q"' . "\n";
-        $result.='${' . $this->ipfwMacro . '} -f table ' . $this->ipfwTable . ' flush' . "\n";
+        $result = '#!/bin/sh' . PHP_EOL;
+        $result.=$this->ipfwMacro . '="/sbin/ipfw -q"' . PHP_EOL;
+        $result.='${' . $this->ipfwMacro . '} -f table ' . $this->ipfwTable . ' flush' . PHP_EOL;
         $result.=$this->getIpfwRules(true);
         return ($result);
     }
@@ -377,12 +377,12 @@ class OrwellWorld {
      * @return string
      */
     public function getMikrotikScript() {
-        $result = '/ip firewall address-list' . "\n";
+        $result = '/ip firewall address-list' . PHP_EOL;
         if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.='add address=' . $eachIp . ' list=' . $this->mtListName . "\n";
+                    $result.='add address=' . $eachIp . ' list=' . $this->mtListName . PHP_EOL;
                 }
             }
         }
@@ -429,7 +429,7 @@ class OrwellWorld {
         $allDomainIps = $this->resolveAllDomainsIps();
         if (!empty($allDomainIps)) {
             foreach ($allDomainIps as $ip => $domain) {
-                $result.=$ip . ' ' . $domain . "\n";
+                $result.=$ip . ' ' . $domain . PHP_EOL;
             }
         }
         return ($result);
@@ -444,7 +444,7 @@ class OrwellWorld {
         $result = '';
         $allIpfwRules = $this->getIpfwRules(false);
         if ((!empty($allIpfwRules)) AND ( !empty($this->ipfwTable))) {
-            $allIpfwRules = explode("\n", $allIpfwRules);
+            $allIpfwRules = explode(PHP_EOL, $allIpfwRules);
             if (!empty($allIpfwRules)) {
                 foreach ($allIpfwRules as $io => $eachRule) {
                     if (!empty($eachRule)) {
@@ -469,7 +469,7 @@ class OrwellWorld {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $template = $this->ipsetPath . ' -A ' . $this->ipsetListName . ' ' . $eachIp . "\n";
+                    $template = $this->ipsetPath . ' -A ' . $this->ipsetListName . ' ' . $eachIp . PHP_EOL;
                     if (!$run) {
                         $result.=$template;
                     } else {
@@ -494,7 +494,7 @@ class OrwellWorld {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $template = $this->iptablesPath . ' -A ' . $this->iptablesChain . ' -d ' . $eachIp . ' -j DROP' . "\n";
+                    $template = $this->iptablesPath . ' -A ' . $this->iptablesChain . ' -d ' . $eachIp . ' -j DROP' . PHP_EOL;
                     if (!$run) {
                         $result.=$template;
                     } else {
