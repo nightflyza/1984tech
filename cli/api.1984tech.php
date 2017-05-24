@@ -283,7 +283,7 @@ class OrwellWorld {
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result.= 'local-zone: "' . $eachDomain . '" static' . PHP_EOL;
-                $result.= 'local-data: "' . $eachDomain . ' A 127.0.0.1' . PHP_EOL;
+                $result.= 'local-data: "' . $eachDomain . ' A 127.0.0.1"' . PHP_EOL;
             }
         }
         return ($result);
