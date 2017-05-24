@@ -6,10 +6,10 @@ $tech = new OrwellWorld();
 //need at least 1 command line argument
 if ($argc >= 2) {
     $allowedOptions = array(
-        '--preview' => 'preview dns zones file to stdout',
+        '--preview' => 'preview dns zones file for isc-bind to stdout',
         '--preview-unbound' => 'preview dns zones file to stdout for unbound',
         '--list' => 'list loaded domains',
-        '--generate' => 'generate zones file on filesystem',
+        '--generate' => 'generate zones file on filesystem for isc-bind',
         '--generate-unbound' => 'generate zones file on filesystem for unbound',
         '--help' => 'show small help'
     );
@@ -37,7 +37,7 @@ if ($argc >= 2) {
                     print('Zones generation skipped because DNS_ZONES option empty' . PHP_EOL);
                 }
                 break;
-             case '--generate-unbound':
+            case '--generate-unbound':
                 $generationResult = $tech->saveUnboundZones();
                 if (!empty($generationResult)) {
                     print('Zones file ' . $generationResult . ' saved' . PHP_EOL);
@@ -47,10 +47,10 @@ if ($argc >= 2) {
                 break;
             case '--help':
                 print('Usage: php cli/dnsgen --option' . PHP_EOL);
-                print('Available options:'.PHP_EOL);
+                print('Available options:' . PHP_EOL);
                 if (!empty($allowedOptions)) {
                     foreach ($allowedOptions as $optionName => $optionDesc) {
-                        print($optionName.' - '.$optionDesc.PHP_EOL);
+                        print($optionName . ' - ' . $optionDesc . PHP_EOL);
                     }
                 }
                 break;
@@ -58,7 +58,6 @@ if ($argc >= 2) {
     } else {
         print('Unknown command line option: ' . $option . PHP_EOL);
     }
-
 } else {
     //option requirement notification
     print('At least one option required.' . PHP_EOL);
