@@ -9,8 +9,8 @@ body
 .outer {
     display: table;
     position: absolute;
-    height: 90%;
-    width: 90%;
+    height: 99%;
+    width: 99%;
 }
 
 .middle {
