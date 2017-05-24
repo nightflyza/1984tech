@@ -167,6 +167,7 @@ class OrwellWorld {
         $this->domainsFile = $this->config['DOMAINS_LIST'];
         $this->dnsAcl = $this->config['DNS_ACL'];
         $this->dnsZonesPath = $this->config['DNS_ZONES'];
+        $this->dnsUnboundZonesPath = $this->config['UNBOUND_DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
         $this->ipfwPath = $this->config['IPFW_PATH'];
         $this->ipfwTable = $this->config['IPFW_TABLE'];
@@ -272,6 +273,39 @@ class OrwellWorld {
         return ($result);
     }
 
+    /**
+     * Returns unbound zones file
+     *
+     * @return string
+     */
+    public function getUnboundZones() {
+        $result = '';
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result.= 'local-zone: "' . $eachDomain . '" static' . PHP_EOL;
+                $result.= 'local-data: "' . $eachDomain . ' A 127.0.0.1"' . PHP_EOL;
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Rewrites unbound zones files
+     *
+     * @return string/void - generated filename
+     */
+    public function saveUnboundZones() {
+        $result = '';
+        $zonesData = $this->getUnboundZones();
+        if (!empty($this->dnsUnboundZonesPath)) {
+            file_put_contents($this->dnsUnboundZonesPath, $zonesData);
+            $result = $this->dnsUnboundZonesPath;
+        } else {
+            $result = '';
+        }
+        return ($result);
+    }
+ 
     /**
      * Initializes dns resolver object incstance for further usage
      * 
