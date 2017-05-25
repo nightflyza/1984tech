@@ -1,6 +1,7 @@
 <?php
 
 include ('api.1984tech.php');
+$tech = new OrwellWorld();
 $squid_config = ('
 #
 # Recommended minimum configuration:
@@ -52,7 +53,7 @@ ssl_bump splice all
 # Leave coredumps in the first cache dir
 coredump_dir /var/squid/cache
 ');
-$tech = new OrwellWorld();
+
 
 //need at least 1 command line argument
 if ($argc >= 2) {
