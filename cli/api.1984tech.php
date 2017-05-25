@@ -233,7 +233,7 @@ class OrwellWorld {
      * @return string
      */
     public function renderDomainsRaw() {
-        $reult = '';
+        $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result.=$eachDomain . PHP_EOL;
