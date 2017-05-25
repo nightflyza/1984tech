@@ -308,6 +308,39 @@ class OrwellWorld {
     }
  
     /**
+     * Returns Squid configs file file
+     *
+     * @return string
+     */
+    public function getSquidConfig($config) {
+        $result = '';
+        if (!empty($config)) {
+                $result.= $config;
+        }
+        return ($result);
+    }
+
+    /**
+     * Rewrites Squid Configs files
+     *
+     * @return string/void - generated filename
+     */
+    public function saveSquid($config, $squidCA) {
+        $result = '';
+        $zonesData = $this->renderDomainsRaw();
+        if (!empty($zonesData) and !empty($config) and !empty($squidCA)) {
+            file_put_contents($this->SquidPath. '/squid.conf', $config);
+            file_put_contents($this->SquidPath. '/squidCA.pem', $squidCA);
+            file_put_contents($this->SquidPath. '/1984tech.conf', $zonesData);
+            $result = $this->SquidPath . '/squid.conf' . PHP_EOL;
+            $result .= $this->SquidPath . '/1984tech.conf' . PHP_EOL;
+        } else {
+            $result = '';
+        }
+        return ($result);
+    }
+
+    /**
      * Initializes dns resolver object incstance for further usage
      * 
      * @return void
