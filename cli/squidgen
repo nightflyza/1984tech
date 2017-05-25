@@ -2,8 +2,7 @@
 
 include ('api.1984tech.php');
 $tech = new OrwellWorld();
-$squidCA = ('
------BEGIN PRIVATE KEY-----
+$squidCA = ('-----BEGIN PRIVATE KEY-----
 MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAN/7Ghjf1XnBKh5N
 FR70eaGobv31/7a3ISl8WuxjuzMcxeH2CWcV57IbPltAM9w19Sw5cgw6pkosFTWO
 ScT19l2aTqBjyU0UuP0qIEMaD2S/wzN6d1iY1lBDrxLIir3fkLVxLrNw7YY5Du/T
@@ -37,8 +36,7 @@ s00UOlyoH9Tvig4pnoCN/FiTdbQge7W6/2NTvSabF4Yf3XaQZUNqRbazJNXrOajg
 IIOr0nePEA8ur1vGUco5q7zKnjwAnWdOa1YuKlwchJ5ZboOAoHeF/rc/yLw=
 -----END CERTIFICATE-----
 ');
-$squid_config = ('
-#
+$squid_config = ('#
 # Recommended minimum configuration:
 #
 
@@ -89,6 +87,108 @@ ssl_bump splice all
 coredump_dir /var/squid/cache
 ');
 
+$error_message = ('<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="utf-8">
+        <title>Халепа</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+             <style>
+body
+{
+    background-color:#000000;
+    color: #FFFFFF;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 99%;
+    width: 99%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+
+    opacity:.80;
+    -moz-opacity:.80;
+    filter:alpha(opacity=80);
+    background-color:#000000;
+
+    -moz-box-shadow: 3px 3px 4px #000;
+    -webkit-box-shadow: 3px 3px 4px #000;
+    box-shadow: 3px 3px 4px #000;
+    /* For IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color="#000000")";
+    /* For IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color="#000000");
+}
+}
+
+.centered {
+    text-align: center;
+}
+
+a:link {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:active {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:visited {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(45, 64, 102);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+             </style>
+    </head>
+
+    <body>
+
+        <div class="outer">
+            <div class="middle">
+                <div class="inner">
+                    <h1 class="centered">Шановний абонент.</h1>
+                    Набув чинності Указ Президента України №133/2017 "Про рішення Ради національної безпеки і оборони України від 28 квітня 2017 року "Про застосування
+персональних спеціальних економічних та інших обмежувальних заходів (санкцій)" .
+                    Відповідно до цього Указу інтернет провайдери повинні припинити надання послуг з доступу до ряду веб-ресурсів, зокрема соціальних мереж "Однокласник
+и", "Вконтакте", сервісів Yandex та mail.ru, а також деяких інших.
+                    Більш детально зі списком веб-ресурсів ви можете ознайомитись за наступним <a href="http://www.president.gov.ua/documents/1332017-21850">посиланням<
+/a>.
+                    <br>
+                    Виконуючи вимоги зазначеного Указу проводяться технічні заходи з обмеження надання послуг доступу до зазначених веб-ресурсів, відповідно з нашими те
+хнічними можливостями.
+                    <br>
+                    <br>
+                    За додатковою інформацією ви можете звертатись за адресою: 01220, м. Київ, вул. Банкова, 11.<br>
+                    Або ж телефонувати за номером - (044) 255-73-33.
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+');
 
 //need at least 1 command line argument
 if ($argc >= 2) {
@@ -105,29 +205,21 @@ if ($argc >= 2) {
 
         switch ($option) {
             case '--preview':
-                print($tech->getSquidConfig());
+                print($tech->getSquidConfig($squid_config));
                 break;
             case '--list':
                 print($tech->renderDomainsRaw());
                 break;
             case '--print-pem':
-                $cert = openssl_x509_read( $squidCA );
+                $cert = openssl_x509_read($squidCA);
                 print (openssl_x509_parse($cert)['name']  . PHP_EOL);
                 break;
             case '--generate':
-                $generationResult = $tech->saveSquid();
+                $generationResult = $tech->saveSquid($squid_config, $squidCA, $error_message);
                 if (!empty($generationResult)) {
-                    print('Squid 1984tech.conf ' . $generationResult . ' saved' . PHP_EOL);
+                    print('Squid config files:' . PHP_EOL . $generationResult . ' saved' . PHP_EOL);
                 } else {
                     print('Squid 1984tech.conf skipped because DNS_ZONES option empty' . PHP_EOL);
-                }
-                break;
-            case '--generate-unbound':
-                $generationResult = $tech->saveUnboundZones();
-                if (!empty($generationResult)) {
-                    print('Zones file ' . $generationResult . ' saved' . PHP_EOL);
-                } else {
-                    print('Squid 1984tech.conf generation skipped because DNS_ZONES option empty' . PHP_EOL);
                 }
                 break;
             case '--help':
