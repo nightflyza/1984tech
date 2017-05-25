@@ -179,6 +179,7 @@ class OrwellWorld {
         $this->iptablesChain = $this->config['IPTABLES_CHAIN'];
         $this->ipsetPath = $this->config['IPSET_PATH'];
         $this->ipsetListName = $this->config['IPSET_LISTNAME'];
+        $this->SquidPath = $this->config['SQUID_PATH'];
 
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
