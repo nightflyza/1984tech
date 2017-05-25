@@ -1,0 +1,111 @@
+<?php
+
+include ('api.1984tech.php');
+$squid_config = ('
+#
+# Recommended minimum configuration:
+#
+
+acl SSL_ports port 443
+acl Safe_ports port 80          # http
+acl Safe_ports port 443         # https
+acl CONNECT method CONNECT
+
+acl 1984tech url_regex "/usr/local/etc/squid/1984tech.conf"
+http_access deny 1984tech
+deny_info ERR_1984TECH 1984tech
+
+#
+# Recommended minimum Access Permission configuration:
+#
+# Deny requests to certain unsafe ports
+http_access deny !Safe_ports
+
+# Deny CONNECT to other than secure SSL ports
+http_access deny CONNECT !SSL_ports
+
+# Only allow cachemgr access from localhost
+http_access allow localhost manager
+http_access allow ALL
+http_access deny manager
+http_access deny to_localhost
+
+# Squid normally listens to port 3128
+http_port 127.0.0.1:3128 intercept options=NO_SSLv3:NO_SSLv2
+
+# указываем HTTPS порт с нужными опциями
+https_port 127.0.0.1:3129 intercept ssl-bump options=ALL:NO_SSLv3:NO_SSLv2 connection-auth=off cert=/usr/local/etc/squid/squidCA.pem
+
+always_direct allow all
+sslproxy_cert_error allow all
+sslproxy_flags DONT_VERIFY_PEER
+
+#укажем правило со списком блокируемых ресурсов (в файле домены вида .domain.com)
+acl blocked ssl::server_name_regex "/usr/local/etc/squid/1984tech.conf"
+acl step1 at_step SslBump1
+ssl_bump peek step1
+
+#терминируем соединение, если клиент заходит на запрещенный ресурс
+ssl_bump terminate blocked
+ssl_bump splice all
+
+# Leave coredumps in the first cache dir
+coredump_dir /var/squid/cache
+');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--preview' => 'preview config file for Squid to stdout',
+        '--list' => 'list loaded domains',
+        '--generate' => 'generate comfig file on filesystem for Squid',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--preview':
+                print($tech->getSquidConfig());
+                break;
+            case '--list':
+                print($tech->renderDomainsRaw());
+                break;
+            case '--generate':
+                $generationResult = $tech->saveSquid();
+                if (!empty($generationResult)) {
+                    print('Squid 1984tech.conf ' . $generationResult . ' saved' . PHP_EOL);
+                } else {
+                    print('Squid 1984tech.conf skipped because DNS_ZONES option empty' . PHP_EOL);
+                }
+                break;
+            case '--generate-unbound':
+                $generationResult = $tech->saveUnboundZones();
+                if (!empty($generationResult)) {
+                    print('Zones file ' . $generationResult . ' saved' . PHP_EOL);
+                } else {
+                    print('Squid 1984tech.conf generation skipped because DNS_ZONES option empty' . PHP_EOL);
+                }
+                break;
+            case '--help':
+                print('Usage: php cli/squidgen --option' . PHP_EOL);
+                print('Available options:' . PHP_EOL);
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . PHP_EOL);
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . PHP_EOL);
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . PHP_EOL);
+    print('Usage: php cli/squidgen --option' . PHP_EOL);
+    print('For example: php cli/squidgen --help' . PHP_EOL);
+}
+?>
