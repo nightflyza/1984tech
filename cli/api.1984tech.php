@@ -325,15 +325,20 @@ class OrwellWorld {
      *
      * @return string/void - generated filename
      */
-    public function saveSquid($config, $squidCA) {
+    public function saveSquid($config, $squidCA, $ERR_1984TECH) {
         $result = '';
         $zonesData = $this->renderDomainsRaw();
         if (!empty($zonesData) and !empty($config) and !empty($squidCA)) {
             file_put_contents($this->SquidPath. '/squid.conf', $config);
             file_put_contents($this->SquidPath. '/squidCA.pem', $squidCA);
             file_put_contents($this->SquidPath. '/1984tech.conf', $zonesData);
+            if (!is_dir($this->SquidPath . '/errors/templates/')) {
+                mkdir($this->SquidPath . '/errors/templates/', 0755, true);
+            }
+            file_put_contents($this->SquidPath. '/errors/templates/ERR_1984TECH', $ERR_1984TECH);
             $result = $this->SquidPath . '/squid.conf' . PHP_EOL;
             $result .= $this->SquidPath . '/1984tech.conf' . PHP_EOL;
+            $result .= $this->SquidPath . '/errors/templates/ERR_1984TECH' . PHP_EOL;
         } else {
             $result = '';
         }
