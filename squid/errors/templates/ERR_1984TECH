@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="uk">
+    <head>
+        <meta charset="utf-8">
+        <title>Халепа</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+             <style>
+body
+{
+    background-color:#000000;
+    color: #FFFFFF;
+}
+
+.outer {
+    display: table;
+    position: absolute;
+    height: 99%;
+    width: 99%;
+}
+
+.middle {
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.inner {
+    margin-left: auto;
+    margin-right: auto;
+    width: 70%;
+
+    opacity:.80;
+    -moz-opacity:.80;
+    filter:alpha(opacity=80);
+    background-color:#000000;
+
+    -moz-box-shadow: 3px 3px 4px #000;
+    -webkit-box-shadow: 3px 3px 4px #000;
+    box-shadow: 3px 3px 4px #000;
+    /* For IE 8 */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color="#000000")";
+    /* For IE 5.5 - 7 */
+    filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color="#000000");
+}
+}
+
+.centered {
+    text-align: center;
+}
+
+a:link {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:active {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:visited {
+    color: rgb(61, 101, 148);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+a:hover {
+    color: rgb(45, 64, 102);
+    font-family: Tahoma,Verdana,Helvetica,sans-serif;
+    text-decoration: none;
+}
+
+             </style>
+    </head>
+
+    <body>
+
+        <div class="outer">
+            <div class="middle">
+                <div class="inner">
+                    <h1 class="centered">Шановний абонент.</h1>
+                    Набув чинності Указ Президента України №133/2017 "Про рішення Ради національної безпеки і оборони України від 28 квітня 2017 року "Про застосування
+персональних спеціальних економічних та інших обмежувальних заходів (санкцій)" .
+                    Відповідно до цього Указу інтернет провайдери повинні припинити надання послуг з доступу до ряду веб-ресурсів, зокрема соціальних мереж "Однокласник
+и", "Вконтакте", сервісів Yandex та mail.ru, а також деяких інших.
+                    Більш детально зі списком веб-ресурсів ви можете ознайомитись за наступним <a href="http://www.president.gov.ua/documents/1332017-21850">посиланням</a>.
+                    <br>
+                    Виконуючи вимоги зазначеного Указу проводяться технічні заходи з обмеження надання послуг доступу до зазначених веб-ресурсів, відповідно з нашими те
+хнічними можливостями.
+                    <br>
+                    <br>
+                    За додатковою інформацією ви можете звертатись за адресою: 01220, м. Київ, вул. Банкова, 11.<br>
+                    Або ж телефонувати за номером - (044) 255-73-33.
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
