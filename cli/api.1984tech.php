@@ -332,7 +332,7 @@ class OrwellWorld {
             file_put_contents($this->SquidPath. '/squid.conf', $config);
             file_put_contents($this->SquidPath. '/squidCA.pem', $squidCA);
             file_put_contents($this->SquidPath. '/1984tech.conf', $zonesData);
-            if (!is_dir($this->SquidPath . '/errors/templates/')) {
+            if (is_dir($this->SquidPath) and !is_dir($this->SquidPath . '/errors/templates/')) {
                 mkdir($this->SquidPath . '/errors/templates/', 0755, true);
             }
             file_put_contents($this->SquidPath. '/errors/templates/ERR_1984TECH', $ERR_1984TECH);
