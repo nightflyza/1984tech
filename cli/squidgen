@@ -211,7 +211,8 @@ if ($argc >= 2) {
                 break;
             case '--print-pem':
                 $cert = openssl_x509_read($squidCA);
-                print (openssl_x509_parse($cert)['name']  . PHP_EOL);
+                $parsedCert=openssl_x509_parse($cert);
+                print ($parsedCert['name']  . PHP_EOL);
                 break;
             case '--generate':
                 $generationResult = $tech->saveSquid($squid_config, $squidCA, $error_message);
