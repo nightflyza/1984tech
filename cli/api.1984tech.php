@@ -135,6 +135,13 @@ class OrwellWorld {
      */
     protected $ipsetPath = '';
 
+    /**
+     * Contains JunOS black list name
+     *
+     * @var string
+     */
+    protected $junListName = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -180,7 +187,7 @@ class OrwellWorld {
         $this->ipsetPath = $this->config['IPSET_PATH'];
         $this->ipsetListName = $this->config['IPSET_LISTNAME'];
         $this->SquidPath = $this->config['SQUID_PATH'];
-
+        $this->junListName = $this->config['JUN_LISTNAME'];
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
@@ -306,7 +313,7 @@ class OrwellWorld {
         }
         return ($result);
     }
- 
+
     /**
      * Returns Squid configs file file
      *
@@ -315,7 +322,7 @@ class OrwellWorld {
     public function getSquidConfig($config) {
         $result = '';
         if (!empty($config)) {
-                $result.= $config;
+            $result.= $config;
         }
         return ($result);
     }
@@ -328,14 +335,14 @@ class OrwellWorld {
     public function saveSquid($config, $squidCA, $ERR_1984TECH) {
         $result = '';
         $zonesData = $this->renderDomainsRaw();
-        if (!empty($zonesData) and !empty($config) and !empty($squidCA)) {
-            file_put_contents($this->SquidPath. '/squid.conf', $config);
-            file_put_contents($this->SquidPath. '/squidCA.pem', $squidCA);
-            file_put_contents($this->SquidPath. '/1984tech.conf', $zonesData);
-            if (is_dir($this->SquidPath) and !is_dir($this->SquidPath . '/errors/templates/')) {
+        if (!empty($zonesData) and ! empty($config) and ! empty($squidCA)) {
+            file_put_contents($this->SquidPath . '/squid.conf', $config);
+            file_put_contents($this->SquidPath . '/squidCA.pem', $squidCA);
+            file_put_contents($this->SquidPath . '/1984tech.conf', $zonesData);
+            if (is_dir($this->SquidPath) and ! is_dir($this->SquidPath . '/errors/templates/')) {
                 mkdir($this->SquidPath . '/errors/templates/', 0755, true);
             }
-            file_put_contents($this->SquidPath. '/errors/templates/ERR_1984TECH', $ERR_1984TECH);
+            file_put_contents($this->SquidPath . '/errors/templates/ERR_1984TECH', $ERR_1984TECH);
             $result = $this->SquidPath . '/squid.conf' . PHP_EOL;
             $result .= $this->SquidPath . '/1984tech.conf' . PHP_EOL;
             $result .= $this->SquidPath . '/errors/templates/ERR_1984TECH' . PHP_EOL;
@@ -473,6 +480,24 @@ class OrwellWorld {
         if (!empty($this->mtScriptPath)) {
             file_put_contents($this->mtScriptPath, $mtScript);
             $result = $this->mtScriptPath;
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns JunOS policy script
+     * 
+     * @return string
+     */
+    public function getJunosScript() {
+        $result = '';
+        if ((!empty($this->domainsList)) AND ( !empty($this->junListName))) {
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $result.='set policy-options prefix-list ' . $this->junListName . ' ' . $eachIp . '/32' . PHP_EOL;
+                }
+            }
         }
         return ($result);
     }
