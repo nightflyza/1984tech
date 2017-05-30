@@ -142,6 +142,13 @@ class OrwellWorld {
      */
     protected $junListName = '';
 
+    /**
+     * Contains Cisco IOS access list number
+     *
+     * @var string
+     */
+    protected $cisListNum = '';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -188,6 +195,7 @@ class OrwellWorld {
         $this->ipsetListName = $this->config['IPSET_LISTNAME'];
         $this->SquidPath = $this->config['SQUID_PATH'];
         $this->junListName = $this->config['JUN_LISTNAME'];
+        $this->cisListNum = $this->config['CIS_LISTNUM'];
 
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
 
@@ -496,6 +504,24 @@ class OrwellWorld {
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
                     $result.='set policy-options prefix-list ' . $this->junListName . ' ' . $eachIp . '/32' . PHP_EOL;
+                }
+            }
+        }
+        return ($result);
+    }
+
+    /**
+     * Returns Cisco IOS script
+     * 
+     * @return string
+     */
+    public function getCiscoScript() {
+        $result = '';
+        if ((!empty($this->domainsList)) AND ( !empty($this->cisListNum))) {
+            $allDomainIps = $this->resolveAllDomainsIps();
+            if (!empty($allDomainIps)) {
+                foreach ($allDomainIps as $eachIp => $eachDomain) {
+                    $result.='access-list ' . $this->cisListNum . ' deny ip any host ' . $eachIp . '/32' . PHP_EOL;
                 }
             }
         }
