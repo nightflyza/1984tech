@@ -9,6 +9,7 @@ if ($argc >= 2) {
         '--preview' => 'preview Mikrotik address list update script to stdout',
         '--resolve' => 'render IPs list of loaded domains',
         '--generate' => 'generate Mikrotik address list update script on filesystem',
+        '--listmk' => 'preview mikrotik per domain address list to stdout',
         '--help' => 'show small help'
     );
 
@@ -29,6 +30,9 @@ if ($argc >= 2) {
                 } else {
                     print('Mikrotik script generation skipped because MT_SCRIPT_PATH option empty' . PHP_EOL);
                 }
+                break;
+            case '--listmk':
+                print($tech->getMikrotikScriptDomains());
                 break;
             case '--help':
                 print('Usage: php cli/mtgen --option' . PHP_EOL);

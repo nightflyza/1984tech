@@ -478,6 +478,21 @@ class OrwellWorld {
     }
 
     /**
+     * Returns ipfw script for table filling
+     * 
+     * @return string
+     */
+    public function getMikrotikScriptDomains() {
+        $result = '/ip firewall address-list' . PHP_EOL;
+        if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result.='add address=' . $eachDomain . ' list=' . $this->mtListName . PHP_EOL;
+            }
+        }
+        return ($result);
+    }
+
+    /**
      * Saves mikrotik update script to filesystem
      * 
      * @return string/void
