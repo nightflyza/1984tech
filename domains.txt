@@ -69,7 +69,7 @@ tv.yandex.ua
 dns.yandex.ua
 browser.yandex.ua
 xml.yandex.ua
-news-front.info ﻿
+news-front.info
 antimaydan.info
 novorossia.today
 dan-news.info
@@ -87,8 +87,6 @@ dnr-online.ru
 dommintrans.ru
 msdnr.ru
 novopressa.ru
-tk-union.tv
-republic-tv.ru
 novorossiatv.com
 dnr-news.com
 tribunal.dnr-online.ru
@@ -110,7 +108,6 @@ dnr-live.ru
 dnr-life.ru
 donbass.media
 novorossia-tv.ru
-republic-tv.ru
 russian.oplot.tv
 tk-union.tv
 ruscrimea.ru
@@ -128,7 +125,6 @@ ikrim.net
 c-inform.info
 nts-tv.com
 1sev.tv
-XN----DTBRG3ALE.XN--P1AI
 trkekran.mybb.ru
 crimea-channel.ru
 trkmillet.ru
@@ -142,8 +138,6 @@ c-eho.info
 crimea.ria.ru
 komtv.org
 gazetacrimea.ru
-lug-info.com
-novoross.info
 Sovminlnr.su
 Mslnr.su
 Mu-lnr.su
@@ -163,7 +157,7 @@ Mchs-lnr.su
 Nslnr.su
 Mvdlnr.ru
 Mgblnr.org
-mіаіstоk.su
+miaistok.su
 Gtklnr.su
 on-line.lg.ua
 lugansk-online.su
@@ -172,7 +166,6 @@ novosti-tchasa.com
 trk-luch.ru
 artv-news.ru
 lug-info.com
-miaistok.su
 lugansk1.info
 novoross.info
 okkupatsiya.net
@@ -205,7 +198,6 @@ tvzvezda.ru
 tnt-online.ru
 radiovera.ru
 sputniknews.com
-ria.ru
 rsport.ria.ru
 1prime.ru
 realty.ria.ru
