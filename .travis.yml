@@ -1,5 +1,7 @@
 language: php
 
+dist: precise
+
 php:
   - 5.3
   - 5.4
@@ -15,4 +17,4 @@ branches:
     - "master"
 
 notifications:
-  email: info@ubilling.net.ua
+email: info@ubilling.net.ua
