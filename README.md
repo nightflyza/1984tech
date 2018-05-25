@@ -1,5 +1,5 @@
 # 1984tech
-1984 tech is an Orwell's world implementation for UA ISPs
+1984 tech is an Orwell's world implementation for Ukrainian ISPs
 
 
 Please visit our official resources:
