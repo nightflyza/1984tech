@@ -47,7 +47,6 @@ c-eho.info
 c-inform.info
 c-pravda.ru
 calendar.yandex.ru
-cikdnr.su
 comitet.su
 credit.webmoney.ru
 crimea-channel.ru
@@ -290,7 +289,6 @@ shahtersk.org
 site.yandex.ua
 slavlnr.su
 smdnr.ru
-snezh-dnr.wmsite.ru
 snezh-dnr.wmsite.ru
 Sovminlnr.su
 sp-rc.ru
