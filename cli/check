@@ -1,0 +1,39 @@
+<?php
+
+include ('api.1984tech.php');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--unique' => 'check domains list for domain duplicates',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--unique':
+                print($tech->uniqueCheck());
+                break;
+            case '--help':
+                print('Usage: php cli/check --option' . PHP_EOL);
+                print('Available options:' . PHP_EOL);
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . PHP_EOL);
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . PHP_EOL);
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . PHP_EOL);
+    print('Usage: php cli/check --option' . PHP_EOL);
+    print('For example: php cli/check --help' . PHP_EOL);
+}
+?>

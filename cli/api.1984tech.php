@@ -251,7 +251,7 @@ class OrwellWorld {
         $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.=$eachDomain . PHP_EOL;
+                $result .= $eachDomain . PHP_EOL;
             }
         }
         return ($result);
@@ -266,7 +266,7 @@ class OrwellWorld {
         $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };' . PHP_EOL;
+                $result .= 'zone "' . $eachDomain . '" { type master; file "' . $this->dnsRedirectsPath . '"; allow-query { ' . $this->dnsAcl . ' }; };' . PHP_EOL;
             }
         }
         return ($result);
@@ -298,8 +298,8 @@ class OrwellWorld {
         $result = '';
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.= 'local-zone: "' . $eachDomain . '" static' . PHP_EOL;
-                $result.= 'local-data: "' . $eachDomain . ' A 127.0.0.1"' . PHP_EOL;
+                $result .= 'local-zone: "' . $eachDomain . '" static' . PHP_EOL;
+                $result .= 'local-data: "' . $eachDomain . ' A 127.0.0.1"' . PHP_EOL;
             }
         }
         return ($result);
@@ -330,7 +330,7 @@ class OrwellWorld {
     public function getSquidConfig($config) {
         $result = '';
         if (!empty($config)) {
-            $result.= $config;
+            $result .= $config;
         }
         return ($result);
     }
@@ -439,7 +439,7 @@ class OrwellWorld {
             }
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.=$ipfwCommand . ' table ' . $this->ipfwTable . ' add ' . $eachIp . PHP_EOL;
+                    $result .= $ipfwCommand . ' table ' . $this->ipfwTable . ' add ' . $eachIp . PHP_EOL;
                 }
             }
         }
@@ -453,9 +453,9 @@ class OrwellWorld {
      */
     public function getIpfwScript() {
         $result = '#!/bin/sh' . PHP_EOL;
-        $result.=$this->ipfwMacro . '="/sbin/ipfw -q"' . PHP_EOL;
-        $result.='${' . $this->ipfwMacro . '} -f table ' . $this->ipfwTable . ' flush' . PHP_EOL;
-        $result.=$this->getIpfwRules(true);
+        $result .= $this->ipfwMacro . '="/sbin/ipfw -q"' . PHP_EOL;
+        $result .= '${' . $this->ipfwMacro . '} -f table ' . $this->ipfwTable . ' flush' . PHP_EOL;
+        $result .= $this->getIpfwRules(true);
         return ($result);
     }
 
@@ -470,7 +470,7 @@ class OrwellWorld {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.='add address=' . $eachIp . ' list=' . $this->mtListName . PHP_EOL;
+                    $result .= 'add address=' . $eachIp . ' list=' . $this->mtListName . PHP_EOL;
                 }
             }
         }
@@ -486,7 +486,7 @@ class OrwellWorld {
         $result = '/ip firewall address-list' . PHP_EOL;
         if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $result.='add address=' . $eachDomain . ' list=' . $this->mtListName . PHP_EOL;
+                $result .= 'add address=' . $eachDomain . ' list=' . $this->mtListName . PHP_EOL;
             }
         }
         return ($result);
@@ -518,7 +518,7 @@ class OrwellWorld {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.='set policy-options prefix-list ' . $this->junListName . ' ' . $eachIp . '/32' . PHP_EOL;
+                    $result .= 'set policy-options prefix-list ' . $this->junListName . ' ' . $eachIp . '/32' . PHP_EOL;
                 }
             }
         }
@@ -536,7 +536,7 @@ class OrwellWorld {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
-                    $result.='access-list ' . $this->cisListNum . ' deny ip any host ' . $eachIp . '/32' . PHP_EOL;
+                    $result .= 'access-list ' . $this->cisListNum . ' deny ip any host ' . $eachIp . '/32' . PHP_EOL;
                 }
             }
         }
@@ -568,7 +568,7 @@ class OrwellWorld {
         $allDomainIps = $this->resolveAllDomainsIps();
         if (!empty($allDomainIps)) {
             foreach ($allDomainIps as $ip => $domain) {
-                $result.=$ip . ' ' . $domain . PHP_EOL;
+                $result .= $ip . ' ' . $domain . PHP_EOL;
             }
         }
         return ($result);
@@ -587,7 +587,7 @@ class OrwellWorld {
             if (!empty($allIpfwRules)) {
                 foreach ($allIpfwRules as $io => $eachRule) {
                     if (!empty($eachRule)) {
-                        $result.=shell_exec($eachRule);
+                        $result .= shell_exec($eachRule);
                     }
                 }
             }
@@ -610,9 +610,9 @@ class OrwellWorld {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
                     $template = $this->ipsetPath . ' -A ' . $this->ipsetListName . ' ' . $eachIp . PHP_EOL;
                     if (!$run) {
-                        $result.=$template;
+                        $result .= $template;
                     } else {
-                        $result.=shell_exec($template);
+                        $result .= shell_exec($template);
                     }
                 }
             }
@@ -635,12 +635,42 @@ class OrwellWorld {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
                     $template = $this->iptablesPath . ' -A ' . $this->iptablesChain . ' -d ' . $eachIp . ' -j DROP' . PHP_EOL;
                     if (!$run) {
-                        $result.=$template;
+                        $result .= $template;
                     } else {
-                        $result.=shell_exec($template);
+                        $result .= shell_exec($template);
                     }
                 }
             }
+        }
+        return ($result);
+    }
+
+    /**
+     * Checks current domains list for domain duplicates
+     * 
+     * @return string
+     */
+    public function uniqueCheck() {
+        $result = '';
+        $domainTmp = array();
+        $dupCount = 0;
+        if (!empty($this->domainsList)) {
+            print('Looking for domain duplicates in ' . $this->domainsFile . PHP_EOL);
+            foreach ($this->domainsList as $line => $eachDomain) {
+                if (!empty($eachDomain)) {
+                    if (isset($domainTmp[$eachDomain])) {
+                        print($eachDomain . ' duplicate in line ' . $line . PHP_EOL);
+                        $dupCount++;
+                    } else {
+                        $domainTmp[$eachDomain] = $line;
+                    }
+                } else {
+                    print('Error: empty domain in line ' . $line . PHP_EOL);
+                }
+            }
+            print('Found ' . $dupCount . ' domain duplicates' . PHP_EOL);
+        } else {
+            print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
         }
         return ($result);
     }
