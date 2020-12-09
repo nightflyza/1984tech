@@ -657,6 +657,7 @@ class OrwellWorld {
         if (!empty($this->domainsList)) {
             print('Looking for domain duplicates in ' . $this->domainsFile . PHP_EOL);
             foreach ($this->domainsList as $line => $eachDomain) {
+                $eachDomain= strtolower($eachDomain);
                 if (!empty($eachDomain)) {
                     if (isset($domainTmp[$eachDomain])) {
                         print($eachDomain . ' duplicate in line ' . $line . PHP_EOL);
