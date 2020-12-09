@@ -675,6 +675,113 @@ class OrwellWorld {
         return ($result);
     }
 
+    /**
+     * Extracts domain name from shitty URLs
+     * 
+     * @param string $address
+     * 
+     * @return string
+     */
+    protected function getHost($address) {
+        $parseUrl = parse_url(trim($address));
+        return trim($parseUrl['host'] ? $parseUrl['host'] : array_shift(explode('/', $parseUrl['path'], 2)));
+    }
+
+    /**
+     * Basic domain names validator
+     * 
+     * @return bool
+     */
+    protected function isDomainValid($domainName) {
+        return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domainName) //valid chars check
+                && preg_match("/^.{1,253}$/", $domainName) //overall length check
+                && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domainName) );
+    }
+
+    /**
+     * Checks for diffs on domains list and newdomains.txt
+     * 
+     * @return string
+     */
+    public function diffCheck() {
+        require_once ('api.punycode.php'); //yep, we need this ;/
+
+        $result = '';
+        $newDomainsListFile = 'newdomains.txt';
+        $domainTmp = array();
+        $newTmp = array();
+        $missedDomainsCount = 0;
+        $missedDomains = '';
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $line => $eachDomain) {
+                if (!empty($eachDomain)) {
+                    $domainTmp[$eachDomain] = $line;
+                } else {
+                    print('Error: empty domain in line ' . $line . PHP_EOL);
+                }
+            }
+
+            if (file_exists($newDomainsListFile)) {
+                $newDomainsList = file_get_contents($newDomainsListFile);
+                if (!empty($newDomainsList)) {
+                    $newDomainsList = explode(PHP_EOL, $newDomainsList);
+
+                    if (!empty($newDomainsList)) {
+                        foreach ($newDomainsList as $line => $eachNewDomain) {
+                            if (!empty($eachNewDomain)) {
+                                //$cleanDomain = parse_url(trim($eachNewDomain));
+                                $cleanDomain = $this->getHost($eachNewDomain);
+                                $cleanDomain = str_replace('www.', '', $cleanDomain);
+                                $cleanDomain = Punycode::encodeHostName($cleanDomain);
+                                if (!$cleanDomain) {
+                                    $result .= 'Error: "' . $eachNewDomain . '" parse error' . PHP_EOL;
+                                } else {
+                                    if ($this->isDomainValid($cleanDomain)) {
+                                        $newTmp[$cleanDomain] = $line;
+                                    } else {
+                                        $result .= 'Error: "' . $eachNewDomain . '" wrong domain' . PHP_EOL;
+                                    }
+                                }
+                            } else {
+                                //$result .= 'Error: empty domain line found in line ' . $line . ' at ' . $newDomainsListFile . PHP_EOL;
+                            }
+                        }
+
+                        if (!empty($domainTmp) AND ! empty($newTmp)) {
+                            //is some new domains appeared?
+                            foreach ($newTmp as $eachNewDomain => $eachNewLine) {
+                                if (!isset($domainTmp[$eachNewDomain])) {
+                                    $result .= 'Warning: ' . $eachNewDomain . ' from ' . $newDomainsListFile . ' not exist in ' . $this->domainsFile . PHP_EOL;
+                                    $missedDomainsCount++;
+                                    $missedDomains .= $eachNewDomain . PHP_EOL;
+                                }
+                            }
+
+                            if ($missedDomainsCount > 0) {
+                                $result .= '================ ' . $missedDomainsCount . ' new domains added ================' . PHP_EOL;
+                                $result .= $missedDomains;
+                            } else {
+                                $result .= 'Sucess! All domains in both sources are similar!' . PHP_EOL;
+                                $result .= 'Found ' . $missedDomainsCount . ' new domains' . PHP_EOL;
+                            }
+                        } else {
+                            print('Error: something went wrong' . PHP_EOL);
+                        }
+                    } else {
+                        print('Error: empty domains list extracted from ' . $newDomainsListFile . PHP_EOL);
+                    }
+                } else {
+                    print('Error: empty domains list loaded from ' . $newDomainsListFile . PHP_EOL);
+                }
+            } else {
+                print('Error: ' . $newDomainsListFile . ' file not found' . PHP_EOL);
+            }
+        } else {
+            print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
+        }
+        return($result);
+    }
+
 }
 
 ?>

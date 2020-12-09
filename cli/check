@@ -7,6 +7,7 @@ $tech = new OrwellWorld();
 if ($argc >= 2) {
     $allowedOptions = array(
         '--unique' => 'check domains list for domain duplicates',
+        '--diff' => 'check domains list diff with newdomains.txt',
         '--help' => 'show small help'
     );
 
@@ -16,6 +17,9 @@ if ($argc >= 2) {
         switch ($option) {
             case '--unique':
                 print($tech->uniqueCheck());
+                break;
+            case '--diff':
+                print($tech->diffCheck());
                 break;
             case '--help':
                 print('Usage: php cli/check --option' . PHP_EOL);
