@@ -472,3 +472,5 @@ rumedia24.com
 rmnews.ru
 howto-news.info
 novosti.icu
+strana.ua 
+strana.news
