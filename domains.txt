@@ -474,3 +474,6 @@ howto-news.info
 novosti.icu
 strana.ua 
 strana.news
+sharij.net
+sharij.com.ua
+sharij.online
