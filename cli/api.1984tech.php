@@ -411,7 +411,7 @@ class OrwellWorld {
                 $domainIps = $this->getDomainIps($eachDomain);
                 if (!empty($domainIps)) {
                     foreach ($domainIps as $domainIp => $domainName) {
-                        if (!empty($domainIp)) {
+                        if (!empty($domainIp) AND $domainIp!='127.0.0.1') {
                             $result[$domainIp] = $domainName;
                         }
                     }
