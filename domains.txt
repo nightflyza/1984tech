@@ -544,4 +544,3 @@ ipstream.one
 crdru.net
 okko.tv
 more.tv
-stop-russian-desinformation.near.page
