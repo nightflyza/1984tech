@@ -108,6 +108,48 @@ class OrwellWorld {
     protected $mtScriptPath = '';
 
     /**
+     * Mikrotik static DNS default IP to point the domains to
+     *
+     * @var string
+     */
+    protected $mtDNSStaticIP = '127.0.0.1';
+
+    /**
+     * Mikrotik static DNS default TTL for added DNS records
+     *
+     * @var string
+     */
+    protected $mtDNSStaticTTL = "00:30:00";
+
+    /**
+     * Mikrotik static DNS script path
+     *
+     * @var string
+     */
+    protected $mtDNSStaticScriptPath = '';
+
+    /**
+     * Mikrotik domains list file chunks path
+     *
+     * @var string
+     */
+    protected $mtDNSStaticChunksPath = '';
+
+    /**
+     * Mikrotik domains list file chunks base name
+     *
+     * @var string
+     */
+    protected $mtDNSStaticChunksBaseName = 'mt_dnsstatic_chunk_';
+
+    /**
+     * Mikrotik domains list file chunks extension
+     *
+     * @var string
+     */
+    protected $mtDNSStaticChunksExt = '.1984t';
+
+    /**
      * Contains path of iptables binary
      *
      * @var string
@@ -189,6 +231,10 @@ class OrwellWorld {
         $this->ipfwScriptPath = $this->config['IPFW_SCRIPT_PATH'];
         $this->mtListName = $this->config['MT_LISTNAME'];
         $this->mtScriptPath = $this->config['MT_SCRIPT_PATH'];
+        $this->mtDNSStaticIP = $this->config['MT_DNSSTATIC_IP'];
+        $this->mtDNSStaticTTL = $this->config['MT_DNSSTATIC_TTL'];
+        $this->mtDNSStaticScriptPath = $this->config['MT_DNSSTATIC_SCRIPT_PATH'];
+        $this->mtDNSStaticChunksPath = $this->config['MT_DNSSTATIC_CHUNKS_PATH'];
         $this->iptablesPath = $this->config['IPTABLES_PATH'];
         $this->iptablesChain = $this->config['IPTABLES_CHAIN'];
         $this->ipsetPath = $this->config['IPSET_PATH'];
@@ -505,6 +551,73 @@ class OrwellWorld {
             $result = $this->mtScriptPath;
         }
         return ($result);
+    }
+
+    /**
+     * Generates suitable output for adding Mikrotik static DNS records
+     *
+     * @return string
+     */
+    public function getMTStaticDNSScript() {
+        $result = '/ip dns static' . PHP_EOL;
+
+        if (!empty($this->domainsList) and !empty($this->mtDNSStaticScriptPath)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result .= 'add address=' . $this->mtDNSStaticIP . ' name=' . $eachDomain . ' ttl=' . $this->mtDNSStaticTTL . PHP_EOL;
+            }
+        }
+
+        return ($result);
+    }
+
+    /**
+     * Saves output for adding Mikrotik static DNS records into a file
+     *
+     * @return string
+     */
+    public function saveMTStaticDNSScript() {
+        $result = '';
+        $mtScript = $this->getMTStaticDNSScript();
+
+        if (!empty($this->mtDNSStaticScriptPath)) {
+            file_put_contents($this->mtDNSStaticScriptPath, $mtScript);
+            $result = $this->mtDNSStaticScriptPath;
+        }
+
+        return ($result);
+    }
+
+    /**
+     * Splits domains list to file chunks with size under 4096 Kb for processing with internal Mikrotik script
+     *
+     * @return int
+     */
+    public function splitDNsListToChunksForMT() {
+        $chunk = '';
+        $chunkSize = 4096;
+        $chunkCounter = 0;
+        $dnsRecParams = ',' . $this->mtDNSStaticIP . ',' . $this->mtDNSStaticTTL;
+
+        if (!empty($this->domainsList)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $chunk.= $eachDomain . $dnsRecParams . PHP_EOL;
+
+                if (strlen($chunk) >= $chunkSize) {
+                    $chunkCounter++;
+                    $chunk = str_replace($eachDomain . $dnsRecParams . PHP_EOL, '', $chunk);
+                    file_put_contents($this->mtDNSStaticChunksPath . DIRECTORY_SEPARATOR . $this->mtDNSStaticChunksBaseName . $chunkCounter . $this->mtDNSStaticChunksExt, $chunk);
+                    $chunk = '';
+                }
+            }
+
+            if (!empty($chunk)) {
+                $chunkCounter++;
+                file_put_contents($this->mtDNSStaticChunksPath . DIRECTORY_SEPARATOR . $this->mtDNSStaticChunksBaseName . $chunkCounter . $this->mtDNSStaticChunksExt, $chunk);
+                $chunk = '';
+            }
+        }
+
+        return ($chunkCounter);
     }
 
     /**
