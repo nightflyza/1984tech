@@ -1,0 +1,61 @@
+<?php
+
+include ('api.1984tech.php');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--preview' => 'preview Mikrotik static DNS records CLI output to stdout',
+        '--generate' => 'generate Mikrotik static DNS records CLI output to a file',
+        '--splitchunks' => 'split domains list to file chunks with size under 4096 Kb for processing with internal Mikrotik script',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--preview':
+                print($tech->getMTStaticDNSScript());
+                break;
+
+            case '--generate':
+                $generationResult = $tech->saveMTStaticDNSScript();
+                if (!empty($generationResult)) {
+                    print('Mikrotik update script file ' . $generationResult . ' saved' . PHP_EOL);
+                } else {
+                    print('Mikrotik script generation skipped because MT_DNSSTATIC_SCRIPT_PATH option empty' . PHP_EOL);
+                }
+                break;
+
+            case '--splitchunks':
+                $chunksCount = $tech->splitDNsListToChunksForMT();
+                if (!empty($chunksCount)) {
+                    print('Mikrotik chunk files created count: ' . $chunksCount . '.' . PHP_EOL
+                          . 'Look for created "mt_dnsstatic_chunk_.1984t" files in "/tmp"' . PHP_EOL);
+                } else {
+                    print('Mikrotik chunk files generation failed: either the domains list is empty or some unknown error occurred' . PHP_EOL);
+                }
+                break;
+
+            case '--help':
+                print('Usage: php cli/mtgen --option' . PHP_EOL);
+                print('Available options:' . PHP_EOL);
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . PHP_EOL);
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . PHP_EOL);
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . PHP_EOL);
+    print('Usage: php cli/mtgen --option' . PHP_EOL);
+    print('For example: php cli/mtgen --help' . PHP_EOL);
+}
+?>
