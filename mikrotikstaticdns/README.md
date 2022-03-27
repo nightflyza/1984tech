@@ -2,9 +2,9 @@
 You can use `cli/mtstaticdnsgen` to generate **CLI** output suitable for copypasting into RouterOS CLI/terminal to add static DNS records of forbidden resources.
 Following parameters are supported:
 - `--preview` - preview Mikrotik static DNS records **CLI** output to stdout
--  `--generate` - generate Mikrotik static DNS records **CLI** output to a file
--  `--splitchunks` - split domains list to file chunks with size under 4096 Kb for processing with internal Mikrotik script
--  `--help` - show small help
+- `--generate` - generate Mikrotik static DNS records **CLI** output to a file
+- `--splitchunks` - split domains list to file chunks with size under 4096 Kb for processing with internal Mikrotik script
+- `--help` - show small help
 
 Also here lies `StaticDNSAdder.rsc` script which is attended to help you to automatically add static DNS records to your Mikrotik instance. 
 Just in case if you're experiencing some troubles with copypasting of the intended **CLI** output into RouterOS CLI/terminal or in case of any other inconveniences of the first method. \
