@@ -33,7 +33,7 @@ if ($argc >= 2) {
                 $chunksCount = $tech->splitDNsListToChunksForMT();
                 if (!empty($chunksCount)) {
                     print('Mikrotik chunk files created count: ' . $chunksCount . '.' . PHP_EOL
-                          . 'Look for created "mt_dnsstatic_chunk_.1984t" files in "/tmp"' . PHP_EOL);
+                          . 'Look for created "mt_dnsstatic_chunk_.1984t" files in "/tmp" (default path)' . PHP_EOL);
                 } else {
                     print('Mikrotik chunk files generation failed: either the domains list is empty or some unknown error occurred' . PHP_EOL);
                 }
