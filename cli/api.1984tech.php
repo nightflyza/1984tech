@@ -588,7 +588,7 @@ class OrwellWorld {
     }
 
     /**
-     * Splits domains list to file chunks with size under 4096 Kb for processing with internal Mikrotik script
+     * Splits domains list to file chunks with size under 4096 bytes for processing with internal Mikrotik script
      *
      * @return int
      */
