@@ -1,0 +1,50 @@
+<?php
+
+include ('api.1984tech.php');
+$tech = new OrwellWorld();
+
+//need at least 1 command line argument
+if ($argc >= 2) {
+    $allowedOptions = array(
+        '--preview' => 'preview records CLI output for PDNSD config to stdout',
+        '--generate' => 'generate records CLI output for PDNSD config to a file',
+        '--help' => 'show small help'
+    );
+
+    $option = $argv[1];
+    if (isset($allowedOptions[$option])) {
+
+        switch ($option) {
+            case '--preview':
+                print($tech->getPDNSDScript());
+                break;
+
+            case '--generate':
+                $generationResult = $tech->savePDNSDScript();
+                if (!empty($generationResult)) {
+                    print('PDNSD script file ' . $generationResult . ' saved' . PHP_EOL);
+                } else {
+                    print('PDNSD script generation skipped because PDNSD_SCRIPT_PATH option empty' . PHP_EOL);
+                }
+                break;
+
+            case '--help':
+                print('Usage: php cli/pdnsdgen --option' . PHP_EOL);
+                print('Available options:' . PHP_EOL);
+                if (!empty($allowedOptions)) {
+                    foreach ($allowedOptions as $optionName => $optionDesc) {
+                        print($optionName . ' - ' . $optionDesc . PHP_EOL);
+                    }
+                }
+                break;
+        }
+    } else {
+        print('Unknown command line option: ' . $option . PHP_EOL);
+    }
+} else {
+    //option requirement notification
+    print('At least one option required.' . PHP_EOL);
+    print('Usage: php cli/pdnsdgen --option' . PHP_EOL);
+    print('For example: php cli/pdnsdgen --help' . PHP_EOL);
+}
+?>
