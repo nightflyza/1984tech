@@ -150,6 +150,13 @@ class OrwellWorld {
     protected $mtDNSStaticChunksExt = '.1984t';
 
     /**
+     * PDNSD script path
+     *
+     * @var string
+     */
+    protected $pdnsdScriptPath = '';
+
+    /**
      * Contains path of iptables binary
      *
      * @var string
@@ -235,6 +242,7 @@ class OrwellWorld {
         $this->mtDNSStaticTTL = $this->config['MT_DNSSTATIC_TTL'];
         $this->mtDNSStaticScriptPath = $this->config['MT_DNSSTATIC_SCRIPT_PATH'];
         $this->mtDNSStaticChunksPath = $this->config['MT_DNSSTATIC_CHUNKS_PATH'];
+        $this->pdnsdScriptPath = $this->config['PDNSD_SCRIPT_PATH'];
         $this->iptablesPath = $this->config['IPTABLES_PATH'];
         $this->iptablesChain = $this->config['IPTABLES_CHAIN'];
         $this->ipsetPath = $this->config['IPSET_PATH'];
@@ -618,6 +626,40 @@ class OrwellWorld {
         }
 
         return ($chunkCounter);
+    }
+
+    /**
+     * Saves negation sections output suitable for PDNSD config to a file
+     *
+     * @return string
+     */
+    public function getPDNSDScript() {
+        $result = '';
+
+        if (!empty($this->domainsList) and !empty($this->pdnsdScriptPath)) {
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result .= 'neg {name=' . $eachDomain . '; types=domain;}' . PHP_EOL;
+            }
+        }
+
+        return ($result);
+    }
+
+    /**
+     * Generates negation sections output suitable for PDNSD config
+     *
+     * @return string
+     */
+    public function savePDNSDScript() {
+        $result = '';
+        $pdnsdScript = $this->getPDNSDScript();
+
+        if (!empty($this->pdnsdScriptPath)) {
+            file_put_contents($this->pdnsdScriptPath, $pdnsdScript);
+            $result = $this->pdnsdScriptPath;
+        }
+
+        return ($result);
     }
 
     /**
