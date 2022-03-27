@@ -39,7 +39,7 @@
                 /ip dns static add address=$dnsIP name=$dnsRec ttl=$dnsTTL;
                 :set dnsRecTotal ($dnsRecTotal + 1);
             } else={
-                :log warning "Can not cast DNS record $tmpDNRec to array, skipping"
+                :log warning "Can not cast DNS record $lineArray to array, skipping"
             }
         } else={
             :log warning "DNS record is empty, skipping"
