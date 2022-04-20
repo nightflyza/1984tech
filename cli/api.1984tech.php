@@ -267,23 +267,36 @@ class OrwellWorld {
     }
 
     /**
+     * Returns domains list array from dataSource file as lineIndex=>domain
+     * 
+     * @return array
+     */
+    protected function loadDomainsSource($dataSource) {
+        $result = array();
+        if (!empty($dataSource)) {
+            $raw = file_get_contents($dataSource);
+            if (!empty($raw)) {
+                $raw = explode(PHP_EOL, $raw);
+                if (!empty($raw)) {
+                    foreach ($raw as $line => $eachDomain) {
+                        if (!empty($eachDomain)) {
+                            $result[$line] = trim($eachDomain);
+                        }
+                    }
+                }
+            }
+        }
+        return($result);
+    }
+
+    /**
      * Loads domains from domains list file into protected prop
      * 
      * @return void
      */
     protected function loadDomains() {
         if (!empty($this->domainsFile)) {
-            $raw = file_get_contents($this->domainsFile);
-            if (!empty($raw)) {
-                $raw = explode(PHP_EOL, $raw);
-                if (!empty($raw)) {
-                    foreach ($raw as $line => $eachDomain) {
-                        if (!empty($eachDomain)) {
-                            $this->domainsList[$line] = trim($eachDomain);
-                        }
-                    }
-                }
-            }
+            $this->domainsList = $this->loadDomainsSource($this->domainsFile);
         }
     }
 
@@ -465,7 +478,7 @@ class OrwellWorld {
                 $domainIps = $this->getDomainIps($eachDomain);
                 if (!empty($domainIps)) {
                     foreach ($domainIps as $domainIp => $domainName) {
-                        if (!empty($domainIp) AND $domainIp!='127.0.0.1') {
+                        if (!empty($domainIp) AND $domainIp != '127.0.0.1') {
                             $result[$domainIp] = $domainName;
                         }
                     }
@@ -569,7 +582,7 @@ class OrwellWorld {
     public function getMTStaticDNSScript() {
         $result = '/ip dns static' . PHP_EOL;
 
-        if (!empty($this->domainsList) and !empty($this->mtDNSStaticScriptPath)) {
+        if (!empty($this->domainsList) and ! empty($this->mtDNSStaticScriptPath)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'add address=' . $this->mtDNSStaticIP . ' name=' . $eachDomain . ' ttl=' . $this->mtDNSStaticTTL . PHP_EOL;
             }
@@ -608,7 +621,7 @@ class OrwellWorld {
 
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
-                $chunk.= $eachDomain . $dnsRecParams . PHP_EOL;
+                $chunk .= $eachDomain . $dnsRecParams . PHP_EOL;
 
                 if (strlen($chunk) >= $chunkSize) {
                     $chunkCounter++;
@@ -636,7 +649,7 @@ class OrwellWorld {
     public function getPDNSDScript() {
         $result = '';
 
-        if (!empty($this->domainsList) and !empty($this->pdnsdScriptPath)) {
+        if (!empty($this->domainsList) and ! empty($this->pdnsdScriptPath)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'neg {name=' . $eachDomain . '; types=domain;}' . PHP_EOL;
             }
@@ -803,16 +816,28 @@ class OrwellWorld {
     /**
      * Checks current domains list for domain duplicates
      * 
+     * @param bool $useLocalList
+     * 
      * @return string
      */
-    public function uniqueCheck() {
+    public function uniqueCheck($useLocalList = false) {
         $result = '';
         $domainTmp = array();
         $dupCount = 0;
+        $totalCount = 0;
+        if ($useLocalList) {
+            $dataSource = 'domains.txt';
+            $listToCheck = $this->loadDomainsSource($dataSource);
+        } else {
+            $dataSource = $this->domainsFile;
+            $listToCheck = $this->domainsList;
+        }
+
+
         if (!empty($this->domainsList)) {
-            print('Looking for domain duplicates in ' . $this->domainsFile . PHP_EOL);
-            foreach ($this->domainsList as $line => $eachDomain) {
-                $eachDomain= strtolower($eachDomain);
+            print('Looking for domain duplicates in ' . $dataSource . PHP_EOL);
+            foreach ($listToCheck as $line => $eachDomain) {
+                $eachDomain = strtolower($eachDomain);
                 if (!empty($eachDomain)) {
                     if (isset($domainTmp[$eachDomain])) {
                         print($eachDomain . ' duplicate in line ' . $line . PHP_EOL);
@@ -823,8 +848,15 @@ class OrwellWorld {
                 } else {
                     print('Error: empty domain in line ' . $line . PHP_EOL);
                 }
+                $totalCount++;
             }
+            print('Total ' . $totalCount . ' domains checked' . PHP_EOL);
             print('Found ' . $dupCount . ' domain duplicates' . PHP_EOL);
+            $checkLabel = ($dupCount == 0) ? 'PASSED' : 'FAILED';
+
+            print(' ==================' . PHP_EOL);
+            print('|   CHECK ' . $checkLabel . '   |' . PHP_EOL);
+            print('===================' . PHP_EOL);
         } else {
             print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
         }

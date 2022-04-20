@@ -6,7 +6,8 @@ $tech = new OrwellWorld();
 //need at least 1 command line argument
 if ($argc >= 2) {
     $allowedOptions = array(
-        '--unique' => 'check domains list for domain duplicates',
+        '--unique' => 'check domains list specified in DOMAINS_LIST option, for domain duplicates',
+        '--unique-local' => 'check local domains.txt for domain duplicates',
         '--diff' => 'check domains list diff with newdomains.txt',
         '--help' => 'show small help'
     );
@@ -17,6 +18,9 @@ if ($argc >= 2) {
         switch ($option) {
             case '--unique':
                 print($tech->uniqueCheck());
+                break;
+            case '--unique-local':
+                print($tech->uniqueCheck(true));
                 break;
             case '--diff':
                 print($tech->diffCheck());
