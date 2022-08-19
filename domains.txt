@@ -699,17 +699,14 @@ xx-pay.me
 delta.milgov.site
 ua-id1467288.io
 sharavoz.tv
-ilook.tv 
 cbilling.live
 ilooktv.smarttv-iptv.ru
-iseetv.net 
-zedom.net 
 dstu.education
 sich-ua.info
 dnepr-news.ru
 donetsk-news.ru
 gorlovka-news.ru
-kherson-news.ru 
+kherson-news.ru
 krivoy-rog-news.ru
 news-kiev.ru
 nikopol-news.ru
@@ -745,7 +742,6 @@ iptvspy.net
 ivi.ru
 j6ivg8rq.russtv.net
 kartina.tv
-kherson-news.ru
 kibrs6z3.tvclub.xyz
 ntvplus.tv
 ok-tv.org
