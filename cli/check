@@ -6,9 +6,11 @@ $tech = new OrwellWorld();
 //need at least 1 command line argument
 if ($argc >= 2) {
     $allowedOptions = array(
+        '--run' => 'run all checks for local and remote domains lists',
         '--unique' => 'check domains list specified in DOMAINS_LIST option, for domain duplicates',
         '--unique-local' => 'check local domains.txt for domain duplicates',
-        '--diff' => 'check domains list diff with newdomains.txt',
+        '--validity' => 'check domains list for for validity',
+        '--validity-local' => 'check local domains list for for validity',
         '--help' => 'show small help'
     );
 
@@ -16,14 +18,20 @@ if ($argc >= 2) {
     if (isset($allowedOptions[$option])) {
 
         switch ($option) {
+            case '--run':
+                print($tech->runAllChecks());
+                break;
             case '--unique':
                 print($tech->uniqueCheck());
                 break;
             case '--unique-local':
                 print($tech->uniqueCheck(true));
                 break;
-            case '--diff':
-                print($tech->diffCheck());
+            case '--validity':
+                print($tech->validityCheck());
+                break;
+            case '--validity-local':
+                print($tech->validityCheck(true));
                 break;
             case '--help':
                 print('Usage: php cli/check --option' . PHP_EOL);

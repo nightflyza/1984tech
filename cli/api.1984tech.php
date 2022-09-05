@@ -818,10 +818,9 @@ class OrwellWorld {
      * 
      * @param bool $useLocalList
      * 
-     * @return string
+     * @return void
      */
     public function uniqueCheck($useLocalList = false) {
-        $result = '';
         $domainTmp = array();
         $dupCount = 0;
         $totalCount = 0;
@@ -836,6 +835,7 @@ class OrwellWorld {
 
         if (!empty($this->domainsList)) {
             print('Looking for domain duplicates in ' . $dataSource . PHP_EOL);
+            print(' ==================' . PHP_EOL);
             foreach ($listToCheck as $line => $eachDomain) {
                 $eachDomain = strtolower($eachDomain);
                 if (!empty($eachDomain)) {
@@ -852,15 +852,14 @@ class OrwellWorld {
             }
             print('Total ' . $totalCount . ' domains checked' . PHP_EOL);
             print('Found ' . $dupCount . ' domain duplicates' . PHP_EOL);
-            $checkLabel = ($dupCount == 0) ? 'PASSED' : 'FAILED';
+            $checkLabel = ($dupCount == 0) ? 'PASSED' : 'FAILED!';
 
             print(' ==================' . PHP_EOL);
-            print('|   CHECK ' . $checkLabel . '   |' . PHP_EOL);
+            print('|   CHECK ' . $checkLabel . '  |' . PHP_EOL);
             print('===================' . PHP_EOL);
         } else {
             print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
         }
-        return ($result);
     }
 
     /**
@@ -887,89 +886,69 @@ class OrwellWorld {
     }
 
     /**
-     * Checks for diffs on domains list and newdomains.txt
+     * Runs all checks for all datasources
      * 
-     * @return string
+     * @return void
      */
-    public function diffCheck() {
+    public function runAllChecks() {
+        $this->uniqueCheck();
+        $this->uniqueCheck(true);
+        $this->validityCheck();
+        $this->validityCheck(true);
+    }
+
+    /**
+     * Checks for domains validity
+     * 
+     * @return void
+     */
+    public function validityCheck($useLocalList = false) {
         require_once ('api.punycode.php'); //yep, we need this ;/
+        $errCounter = 0;
+        $totalCounter = 0;
+        if ($useLocalList) {
+            $dataSource = 'domains.txt';
+            $listToCheck = $this->loadDomainsSource($dataSource);
+        } else {
+            $dataSource = $this->domainsFile;
+            $listToCheck = $this->domainsList;
+        }
 
-        $result = '';
-        $newDomainsListFile = 'newdomains.txt';
-        $domainTmp = array();
-        $newTmp = array();
-        $missedDomainsCount = 0;
-        $missedDomains = '';
         if (!empty($this->domainsList)) {
-            foreach ($this->domainsList as $line => $eachDomain) {
-                if (!empty($eachDomain)) {
-                    $domainTmp[$eachDomain] = $line;
-                } else {
-                    print('Error: empty domain in line ' . $line . PHP_EOL);
-                }
-            }
+            print('Checking Domains validity in ' . $dataSource . PHP_EOL);
+            print(' ==================' . PHP_EOL);
 
-            if (file_exists($newDomainsListFile)) {
-                $newDomainsList = file_get_contents($newDomainsListFile);
-                if (!empty($newDomainsList)) {
-                    $newDomainsList = explode(PHP_EOL, $newDomainsList);
-
-                    if (!empty($newDomainsList)) {
-                        foreach ($newDomainsList as $line => $eachNewDomain) {
-                            if (!empty($eachNewDomain)) {
-                                //$cleanDomain = parse_url(trim($eachNewDomain));
-                                $cleanDomain = $this->getHost($eachNewDomain);
-                                $cleanDomain = str_replace('www.', '', $cleanDomain);
-                                $cleanDomain = Punycode::encodeHostName($cleanDomain);
-                                if (!$cleanDomain) {
-                                    $result .= 'Error: "' . $eachNewDomain . '" parse error' . PHP_EOL;
-                                } else {
-                                    if ($this->isDomainValid($cleanDomain)) {
-                                        $newTmp[$cleanDomain] = $line;
-                                    } else {
-                                        $result .= 'Error: "' . $eachNewDomain . '" wrong domain' . PHP_EOL;
-                                    }
-                                }
-                            } else {
-                                //$result .= 'Error: empty domain line found in line ' . $line . ' at ' . $newDomainsListFile . PHP_EOL;
-                            }
-                        }
-
-                        if (!empty($domainTmp) AND ! empty($newTmp)) {
-                            //is some new domains appeared?
-                            foreach ($newTmp as $eachNewDomain => $eachNewLine) {
-                                if (!isset($domainTmp[$eachNewDomain])) {
-                                    $result .= 'Warning: ' . $eachNewDomain . ' from ' . $newDomainsListFile . ' not exist in ' . $this->domainsFile . PHP_EOL;
-                                    $missedDomainsCount++;
-                                    $missedDomains .= $eachNewDomain . PHP_EOL;
-                                }
-                            }
-
-                            if ($missedDomainsCount > 0) {
-                                $result .= '================ ' . $missedDomainsCount . ' new domains added ================' . PHP_EOL;
-                                $result .= $missedDomains;
-                            } else {
-                                $result .= 'Sucess! All domains in both sources are similar!' . PHP_EOL;
-                                $result .= 'Found ' . $missedDomainsCount . ' new domains' . PHP_EOL;
-                            }
-                        } else {
-                            print('Error: something went wrong' . PHP_EOL);
-                        }
+            foreach ($listToCheck as $line => $eachDomain) {
+                $cleanDomain = $this->getHost($eachDomain);
+                $cleanDomain = str_replace('www.', '', $cleanDomain);
+                $cleanDomain = Punycode::encodeHostName($cleanDomain);
+                if ($cleanDomain) {
+                    if ($eachDomain != $cleanDomain) {
+                        print_r('Error: domain ' . $eachDomain . ' must be like ' . $cleanDomain . ' at line ' . $line . PHP_EOL);
+                        $errCounter++;
                     } else {
-                        print('Error: empty domains list extracted from ' . $newDomainsListFile . PHP_EOL);
+                        if (!$this->isDomainValid($eachDomain)) {
+                            print_r('Error: domain ' . $eachDomain . ' is not valid in line ' . $line . PHP_EOL);
+                            $errCounter++;
+                        }
                     }
                 } else {
-                    print('Error: empty domains list loaded from ' . $newDomainsListFile . PHP_EOL);
+                    print_r('Error: domain ' . $eachDomain . ' is corrupted in line ' . $line . PHP_EOL);
+                    $errCounter++;
                 }
-            } else {
-                print('Error: ' . $newDomainsListFile . ' file not found' . PHP_EOL);
+                $totalCounter++;
             }
         } else {
             print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
+            $errCounter++;
         }
-        return($result);
+
+        print('Total ' . $totalCounter . ' domains checked' . PHP_EOL);
+        print('Found ' . $errCounter . ' domain errors' . PHP_EOL);
+        $checkLabel = ($errCounter == 0) ? 'PASSED' : 'FAILED!';
+        print(' ==================' . PHP_EOL);
+        print('|   CHECK ' . $checkLabel . '  |' . PHP_EOL);
+        print('===================' . PHP_EOL);
     }
 
 }
-
-?>
