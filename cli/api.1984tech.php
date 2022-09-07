@@ -198,6 +198,13 @@ class OrwellWorld {
      */
     protected $cisListNum = '';
 
+    /**
+     * Contains default unbound redirection host
+     *
+     * @var string
+     */
+    protected $unboundRedirectHost = '127.0.0.1';
+
     const CONFIG_PATH = '1984tech.ini';
 
     /**
@@ -250,8 +257,12 @@ class OrwellWorld {
         $this->SquidPath = $this->config['SQUID_PATH'];
         $this->junListName = $this->config['JUN_LISTNAME'];
         $this->cisListNum = $this->config['CIS_LISTNUM'];
-
         $dnsServersTmp = $this->config['DNS_RESOLVER_SERVERS'];
+        if (isset($this->config['UNBOUND_REDIRECT_HOST'])) {
+            if (!empty($this->config['UNBOUND_REDIRECT_HOST'])) {
+                $this->unboundRedirectHost = $this->config['UNBOUND_REDIRECT_HOST'];
+            }
+        }
 
         if (!empty($dnsServersTmp)) {
             $dnsServersTmp = explode(',', $dnsServersTmp);
@@ -366,7 +377,7 @@ class OrwellWorld {
         if (!empty($this->domainsList)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'local-zone: "' . $eachDomain . '" static' . PHP_EOL;
-                $result .= 'local-data: "' . $eachDomain . ' A 127.0.0.1"' . PHP_EOL;
+                $result .= 'local-data: "' . $eachDomain . ' A ' . $this->unboundRedirectHost . '"' . PHP_EOL;
             }
         }
         return ($result);
