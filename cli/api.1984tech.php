@@ -854,9 +854,9 @@ class OrwellWorld {
             print('Found ' . $dupCount . ' domain duplicates' . PHP_EOL);
             $checkLabel = ($dupCount == 0) ? 'PASSED' : 'FAILED!';
 
-            print(' ==================' . PHP_EOL);
-            print('|   CHECK ' . $checkLabel . '  |' . PHP_EOL);
-            print('===================' . PHP_EOL);
+            print(' ===========================' . PHP_EOL);
+            print('| DUPLICATES CHECK ' . $checkLabel . '  |' . PHP_EOL);
+            print('============================' . PHP_EOL);
         } else {
             print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
         }
@@ -946,9 +946,9 @@ class OrwellWorld {
         print('Total ' . $totalCounter . ' domains checked' . PHP_EOL);
         print('Found ' . $errCounter . ' domain errors' . PHP_EOL);
         $checkLabel = ($errCounter == 0) ? 'PASSED' : 'FAILED!';
-        print(' ==================' . PHP_EOL);
-        print('|   CHECK ' . $checkLabel . '  |' . PHP_EOL);
-        print('===================' . PHP_EOL);
+        print(' =========================' . PHP_EOL);
+        print('| VALIDITY CHECK ' . $checkLabel . '  |' . PHP_EOL);
+        print(' =========================' . PHP_EOL);
     }
 
 }

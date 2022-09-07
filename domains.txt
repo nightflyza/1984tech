@@ -918,3 +918,13 @@ ever-gos.top
 gen-gos.top
 pro-gos.top
 trust-gos.top
+blogprices.shop
+clubprices.shop
+dayprices.shop
+expertprices.shop
+forumprices.shop
+masterprices.shop
+microprices.shop
+plusprices.shop
+portalprices.shop
+ox-pay.me
