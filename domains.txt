@@ -992,3 +992,5 @@ topkassavip.shop
 win24dayprice.shop
 winkassa.shop
 ua-onlines.ga
+strana.today
+strana.best
