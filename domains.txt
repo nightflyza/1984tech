@@ -994,3 +994,5 @@ winkassa.shop
 ua-onlines.ga
 strana.today
 strana.best
+ctrana.media
+ctrana.online
