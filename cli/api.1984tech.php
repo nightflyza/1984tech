@@ -898,8 +898,17 @@ class OrwellWorld {
      * @return string
      */
     protected function getHost($address) {
-        $parseUrl = parse_url(trim($address));
-        return trim($parseUrl['host'] ? $parseUrl['host'] : array_shift(explode('/', $parseUrl['path'], 2)));
+        $result = '';
+        $address = trim($address);
+        $parseUrl = parse_url($address);
+        if (isset($parseUrl['host'])) {
+            $result = $parseUrl['host'];
+        } else {
+            if (isset($parseUrl['path'])) {
+                $result = array_shift(explode('/', $parseUrl['path'], 2));
+            }
+        }
+        return($result);
     }
 
     /**
