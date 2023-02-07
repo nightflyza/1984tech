@@ -205,6 +205,23 @@ class OrwellWorld {
      */
     protected $unboundRedirectHost = '127.0.0.1';
 
+    /**
+     * unbound zones config path
+     *
+     * @var string
+     */
+    protected $dnsUnboundZonesPath = '';
+
+    /**
+     * Squid directory path
+     *
+     * @var string
+     */
+    protected $SquidPath = '';
+
+    /**
+     * Primary configuration file path/name
+     */
     const CONFIG_PATH = '1984tech.ini';
 
     /**
