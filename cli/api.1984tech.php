@@ -901,11 +901,13 @@ class OrwellWorld {
         $result = '';
         $address = trim($address);
         $parseUrl = parse_url($address);
+
         if (isset($parseUrl['host'])) {
             $result = $parseUrl['host'];
         } else {
             if (isset($parseUrl['path'])) {
-                $result = array_shift(explode('/', $parseUrl['path'], 2));
+                $exploded = explode('/', $parseUrl['path']);
+                $result = $exploded[0];
             }
         }
         return($result);
