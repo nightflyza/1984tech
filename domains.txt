@@ -1041,7 +1041,6 @@ doneast.su
 lifelug.su
 lnr.media
 redray-lnr-news.su
-redray-lnr-news.su
 skgazeta.su
 slavvesti.su
 szstakhanov.su
