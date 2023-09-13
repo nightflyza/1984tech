@@ -9854,7 +9854,6 @@ gosrezervlnr.su
 asketlnr.su
 doneast.su
 redray-lnr-news.su
-redray-lnr-news.su
 skgazeta.su
 slavvesti.su
 szstakhanov.su
