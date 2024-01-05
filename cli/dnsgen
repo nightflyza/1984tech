@@ -7,9 +7,11 @@ $tech = new OrwellWorld();
 if ($argc >= 2) {
     $allowedOptions = array(
         '--preview' => 'preview dns zones file for isc-bind to stdout',
+        '--preview-rpz' => 'preview dns RPZ zone file for isc-bind to stdout',
         '--preview-unbound' => 'preview dns zones file to stdout for unbound',
         '--list' => 'list loaded domains',
         '--generate' => 'generate zones file on filesystem for isc-bind',
+        '--generate-rpz' => 'generate RPZ zone file on filesystem for isc-bind',
         '--generate-unbound' => 'generate zones file on filesystem for unbound',
         '--help' => 'show small help'
     );
@@ -22,6 +24,9 @@ if ($argc >= 2) {
         switch ($option) {
             case '--preview':
                 print($tech->getBindZones());
+                break;
+            case '--preview-rpz':
+                print($tech->getBindRpzZone());
                 break;
             case '--preview-unbound':
                 print($tech->getUnboundZones());
@@ -36,6 +41,9 @@ if ($argc >= 2) {
                 } else {
                     print('Zones generation skipped because DNS_ZONES option empty' . PHP_EOL);
                 }
+                break;
+            case '--generate-rpz':
+                print($tech->saveBindRpzZone());
                 break;
             case '--generate-unbound':
                 $generationResult = $tech->saveUnboundZones();
