@@ -256,6 +256,8 @@ class OrwellWorld {
         $this->dnsZonesPath = $this->config['DNS_ZONES'];
         $this->dnsUnboundZonesPath = $this->config['UNBOUND_DNS_ZONES'];
         $this->dnsRedirectsPath = $this->config['DNS_REDIRECTS'];
+        $this->dnsRPZzoneName = $this->config['RPZ_ZONE_NAME'];
+        $this->dnsRPZzoneFile = $this->config['RPZ_ZONE_FILE'];
         $this->ipfwPath = $this->config['IPFW_PATH'];
         $this->ipfwTable = $this->config['IPFW_TABLE'];
         $this->ipfwMacro = $this->config['IPFW_MACRO'];
@@ -384,6 +386,73 @@ class OrwellWorld {
         return ($result);
     }
 
+    /**
+     * Validate isc-bind RPZ zone file
+     *
+     * @return string
+     */
+    protected function validateBindRpzZoneFile() {
+        $result = '';
+        if (file_exists($this->dnsRPZzoneFile)) {
+                $result = trim(shell_exec('named-checkzone rpz ' . $this->dnsRPZzoneFile . ' | grep "OK"'));
+        }
+        return $result;
+    }
+
+    /**
+     * Returns current zone serial
+     *
+     * @return string
+     */
+    protected function getBindRpzSerial() {
+        $result = '';
+        $result = shell_exec('rndc zonestatus ' . $this->dnsRPZzoneName . ' | grep "serial: "');
+        $result = trim(str_replace("serial: ", "", $result));
+        return $result;
+    }
+
+    /**
+     * Returns isc-bind RPZ zone file
+     *
+     * @return string
+     */
+    public function getBindRpzZone() {
+        $result = '';
+        if (!empty($this->domainsList)) {
+                $result .= file_get_contents("cli/bind-rpz.template");
+            foreach ($this->domainsList as $io => $eachDomain) {
+                $result .= $eachDomain . "\t" . 'A' . "\t" . '127.0.0.1' . PHP_EOL;
+                $result .= "*." . $eachDomain . "\t" . 'A' . "\t" . '127.0.0.1' . PHP_EOL;
+            }
+        }
+        // replace current serial to new serial
+        $result = preg_replace("/{serial}/", ($this->getBindRpzSerial())+1, $result);
+        return ($result);
+    }
+
+    /**
+     * Rewrite isc-bind RPZ zone file
+     * 
+     * @return string/void - generated filename
+     */
+    public function saveBindRpzZone() {
+        if (file_exists($this->dnsRPZzoneFile)) {
+            rename($this->dnsRPZzoneFile, $this->dnsRPZzoneFile . ".bak");
+            $zoneData = $this->getBindRpzZone();
+            file_put_contents($this->dnsRPZzoneFile, $zoneData);
+            if ($this->validateBindRpzZoneFile() == "OK") {
+                $result = shell_exec('rndc reload ' . $this->dnsRPZzoneName);
+                unlink($this->dnsRPZzoneFile . ".bak");
+                return $result;
+            } else {
+                rename($this->dnsRPZzoneFile . ".bak", $this->dnsRPZzoneFile);
+                die('BIND config error');
+            }
+        } else {
+            die('no zone file found');
+        }
+    }
+    
     /**
      * Returns unbound zones file
      *
