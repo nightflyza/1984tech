@@ -316,7 +316,7 @@ class OrwellWorld {
                 }
             }
         }
-        return($result);
+        return ($result);
     }
 
     /**
@@ -336,7 +336,7 @@ class OrwellWorld {
      * @return array
      */
     public function getDomains() {
-        return($this->domainsList);
+        return ($this->domainsList);
     }
 
     /**
@@ -394,7 +394,7 @@ class OrwellWorld {
     protected function validateBindRpzZoneFile() {
         $result = '';
         if (file_exists($this->dnsRPZzoneFile)) {
-                $result = trim(shell_exec('named-checkzone rpz ' . $this->dnsRPZzoneFile . ' | grep "OK"'));
+            $result = trim(shell_exec('named-checkzone rpz ' . $this->dnsRPZzoneFile . ' | grep "OK"'));
         }
         return $result;
     }
@@ -419,14 +419,14 @@ class OrwellWorld {
     public function getBindRpzZone() {
         $result = '';
         if (!empty($this->domainsList)) {
-                $result .= file_get_contents("cli/bind-rpz.template");
+            $result .= file_get_contents("cli/bind-rpz.template");
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= $eachDomain . "\t" . 'A' . "\t" . '127.0.0.1' . PHP_EOL;
                 $result .= "*." . $eachDomain . "\t" . 'A' . "\t" . '127.0.0.1' . PHP_EOL;
             }
         }
         // replace current serial to new serial
-        $result = preg_replace("/{serial}/", ($this->getBindRpzSerial())+1, $result);
+        $result = preg_replace("/{serial}/", ($this->getBindRpzSerial()) + 1, $result);
         return ($result);
     }
 
@@ -452,7 +452,7 @@ class OrwellWorld {
             die('no zone file found');
         }
     }
-    
+
     /**
      * Returns unbound zones file
      *
@@ -507,11 +507,11 @@ class OrwellWorld {
     public function saveSquid($config, $squidCA, $ERR_1984TECH) {
         $result = '';
         $zonesData = $this->renderDomainsRaw();
-        if (!empty($zonesData) and ! empty($config) and ! empty($squidCA)) {
+        if (!empty($zonesData) and !empty($config) and !empty($squidCA)) {
             file_put_contents($this->SquidPath . '/squid.conf', $config);
             file_put_contents($this->SquidPath . '/squidCA.pem', $squidCA);
             file_put_contents($this->SquidPath . '/1984tech.conf', $zonesData);
-            if (is_dir($this->SquidPath) and ! is_dir($this->SquidPath . '/errors/templates/')) {
+            if (is_dir($this->SquidPath) and !is_dir($this->SquidPath . '/errors/templates/')) {
                 mkdir($this->SquidPath . '/errors/templates/', 0755, true);
             }
             file_put_contents($this->SquidPath . '/errors/templates/ERR_1984TECH', $ERR_1984TECH);
@@ -530,7 +530,7 @@ class OrwellWorld {
      * @return void
      */
     protected function initDnsResolver() {
-        require_once ('Net/DNS2.php');
+        require_once('Net/DNS2.php');
         $this->resolver = new Net_DNS2_Resolver(array('nameservers' => $this->dnsServers));
     }
 
@@ -575,7 +575,7 @@ class OrwellWorld {
                 $domainIps = $this->getDomainIps($eachDomain);
                 if (!empty($domainIps)) {
                     foreach ($domainIps as $domainIp => $domainName) {
-                        if (!empty($domainIp) AND $domainIp != '127.0.0.1') {
+                        if (!empty($domainIp) and $domainIp != '127.0.0.1') {
                             $result[$domainIp] = $domainName;
                         }
                     }
@@ -594,7 +594,7 @@ class OrwellWorld {
      */
     public function getIpfwRules($useMacro) {
         $result = '';
-        if ((!empty($this->domainsList)) AND ( !empty($this->ipfwTable)) AND ( !empty($this->ipfwPath))) {
+        if ((!empty($this->domainsList)) and (!empty($this->ipfwTable)) and (!empty($this->ipfwPath))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if ($useMacro) {
                 $ipfwCommand = '${' . $this->ipfwMacro . '}';
@@ -630,7 +630,7 @@ class OrwellWorld {
      */
     public function getMikrotikScript() {
         $result = '/ip firewall address-list' . PHP_EOL;
-        if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
+        if ((!empty($this->domainsList)) and (!empty($this->mtListName))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
@@ -648,7 +648,7 @@ class OrwellWorld {
      */
     public function getMikrotikScriptDomains() {
         $result = '/ip firewall address-list' . PHP_EOL;
-        if ((!empty($this->domainsList)) AND ( !empty($this->mtListName))) {
+        if ((!empty($this->domainsList)) and (!empty($this->mtListName))) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'add address=' . $eachDomain . ' list=' . $this->mtListName . PHP_EOL;
             }
@@ -679,7 +679,7 @@ class OrwellWorld {
     public function getMTStaticDNSScript() {
         $result = '/ip dns static' . PHP_EOL;
 
-        if (!empty($this->domainsList) and ! empty($this->mtDNSStaticScriptPath)) {
+        if (!empty($this->domainsList) and !empty($this->mtDNSStaticScriptPath)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'add address=' . $this->mtDNSStaticIP . ' name=' . $eachDomain . ' ttl=' . $this->mtDNSStaticTTL . PHP_EOL;
             }
@@ -746,7 +746,7 @@ class OrwellWorld {
     public function getPDNSDScript() {
         $result = '';
 
-        if (!empty($this->domainsList) and ! empty($this->pdnsdScriptPath)) {
+        if (!empty($this->domainsList) and !empty($this->pdnsdScriptPath)) {
             foreach ($this->domainsList as $io => $eachDomain) {
                 $result .= 'neg {name=' . $eachDomain . '; types=domain;}' . PHP_EOL;
             }
@@ -779,7 +779,7 @@ class OrwellWorld {
      */
     public function getJunosScript() {
         $result = '';
-        if ((!empty($this->domainsList)) AND ( !empty($this->junListName))) {
+        if ((!empty($this->domainsList)) and (!empty($this->junListName))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
@@ -797,7 +797,7 @@ class OrwellWorld {
      */
     public function getCiscoScript() {
         $result = '';
-        if ((!empty($this->domainsList)) AND ( !empty($this->cisListNum))) {
+        if ((!empty($this->domainsList)) and (!empty($this->cisListNum))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
@@ -847,7 +847,7 @@ class OrwellWorld {
     public function ipfwTableUpdate() {
         $result = '';
         $allIpfwRules = $this->getIpfwRules(false);
-        if ((!empty($allIpfwRules)) AND ( !empty($this->ipfwTable))) {
+        if ((!empty($allIpfwRules)) and (!empty($this->ipfwTable))) {
             $allIpfwRules = explode(PHP_EOL, $allIpfwRules);
             if (!empty($allIpfwRules)) {
                 foreach ($allIpfwRules as $io => $eachRule) {
@@ -869,7 +869,7 @@ class OrwellWorld {
      */
     public function getIpsetScript($run = false) {
         $result = '';
-        if ((!empty($this->domainsList)) AND ( !empty($this->ipsetListName)) AND ( !empty($this->ipsetPath))) {
+        if ((!empty($this->domainsList)) and (!empty($this->ipsetListName)) and (!empty($this->ipsetPath))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
@@ -894,7 +894,7 @@ class OrwellWorld {
      */
     public function getIptablesScript($run = false) {
         $result = '';
-        if ((!empty($this->domainsList)) AND ( !empty($this->iptablesChain)) AND ( !empty($this->iptablesPath))) {
+        if ((!empty($this->domainsList)) and (!empty($this->iptablesChain)) and (!empty($this->iptablesPath))) {
             $allDomainIps = $this->resolveAllDomainsIps();
             if (!empty($allDomainIps)) {
                 foreach ($allDomainIps as $eachIp => $eachDomain) {
@@ -958,6 +958,63 @@ class OrwellWorld {
             print('Error: empty domains list loaded from ' . $this->domainsFile . PHP_EOL);
         }
     }
+    /**
+     * Syncs local domains list with another or remote list.
+     *
+     * @param string $fileUrl The URL of the file to fetch the contents from (optional).
+     *              
+     * @return void
+     */
+    public function sync($fileUrl = '') {
+        $localCount = 0;
+        $remoteCount = 0;
+        $newCount = 0;
+        $newList = '';
+        $uniq = array();
+        //using local source
+        $dataSource = 'domains.txt';
+        $localDomains = $this->loadDomainsSource($dataSource);
+
+        if (empty($fileUrl)) {
+            $fileUrl = 'newdomains.txt';
+        }
+        @$rawNewDomains = file_get_contents($fileUrl);
+        print('Looking for new domains in ' . $fileUrl . PHP_EOL);
+
+        if (!empty($rawNewDomains)) {
+            $newDomains = explode(PHP_EOL, $rawNewDomains);
+            $localDomains = array_flip($localDomains);
+            $remoteCount = sizeof($newDomains);
+            $localCount = sizeof($localDomains);
+            print($remoteCount . ' Domains in ' . $fileUrl . PHP_EOL);
+            print($localCount . ' Domains in ' . $dataSource . PHP_EOL);
+            print(' ===========================' . PHP_EOL);
+            foreach ($newDomains as $io => $eachDomain) {
+                if (!empty($eachDomain)) {
+                    if (!isset($localDomains[$eachDomain])) {
+                        if ($this->isDomainValid($eachDomain)) {
+                            if (!isset($uniq[$eachDomain])) {
+                                $newList .= trim($eachDomain) . PHP_EOL;
+                                $uniq[$eachDomain] = 1;
+                                $newCount++;
+                            }
+                        }
+                    }
+                }
+            }
+            if ($newCount > 0) {
+                print($newList);
+            }
+            print(' ================================================' . PHP_EOL);
+            print('|  CHECK FINISHED: ' . $newCount . ' NEW DOMAINS FOUND |' . PHP_EOL);
+            print('=================================================' . PHP_EOL);
+        } else {
+            print(' ===========================' . PHP_EOL);
+            print('|  CHECK FAILED: EMPTY LIST |' . PHP_EOL);
+            print('============================' . PHP_EOL);
+        }
+        //print($rawNewDomains);
+    }
 
     /**
      * Extracts domain name from shitty URLs
@@ -979,7 +1036,7 @@ class OrwellWorld {
                 $result = $exploded[0];
             }
         }
-        return($result);
+        return ($result);
     }
 
     /**
@@ -989,8 +1046,8 @@ class OrwellWorld {
      */
     protected function isDomainValid($domainName) {
         return (preg_match("/^([a-z\d](-*[a-z\d])*)(\.([a-z\d](-*[a-z\d])*))*$/i", $domainName) //valid chars check
-                && preg_match("/^.{1,253}$/", $domainName) //overall length check
-                && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domainName) );
+            && preg_match("/^.{1,253}$/", $domainName) //overall length check
+            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domainName));
     }
 
     /**
@@ -1011,7 +1068,7 @@ class OrwellWorld {
      * @return void
      */
     public function validityCheck($useLocalList = false) {
-        require_once ('api.punycode.php'); //yep, we need this ;/
+        require_once('api.punycode.php'); //yep, we need this ;/
         $errCounter = 0;
         $totalCounter = 0;
         if ($useLocalList) {
@@ -1058,5 +1115,4 @@ class OrwellWorld {
         print('| VALIDITY CHECK ' . $checkLabel . '  |' . PHP_EOL);
         print(' =========================' . PHP_EOL);
     }
-
 }

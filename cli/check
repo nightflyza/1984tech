@@ -1,6 +1,6 @@
 <?php
 
-include ('api.1984tech.php');
+include('api.1984tech.php');
 $tech = new OrwellWorld();
 
 //need at least 1 command line argument
@@ -11,12 +11,12 @@ if ($argc >= 2) {
         '--unique-local' => 'check local domains.txt for domain duplicates',
         '--validity' => 'check domains list for for validity',
         '--validity-local' => 'check local domains list for for validity',
+        '--sync' => 'sync 1984 local domains base with another list format: --sync [domains list file path or HTTP URL]',
         '--help' => 'show small help'
     );
 
     $option = $argv[1];
     if (isset($allowedOptions[$option])) {
-
         switch ($option) {
             case '--run':
                 print($tech->runAllChecks());
@@ -32,6 +32,13 @@ if ($argc >= 2) {
                 break;
             case '--validity-local':
                 print($tech->validityCheck(true));
+                break;
+            case '--sync':
+                $customUrl = '';
+                if (isset($argv[2])) {
+                    $customUrl = $argv[2];
+                }
+                print($tech->sync($customUrl));
                 break;
             case '--help':
                 print('Usage: php cli/check --option' . PHP_EOL);
@@ -52,4 +59,3 @@ if ($argc >= 2) {
     print('Usage: php cli/check --option' . PHP_EOL);
     print('For example: php cli/check --help' . PHP_EOL);
 }
-?>
