@@ -1085,7 +1085,7 @@ class OrwellWorld {
 
             foreach ($listToCheck as $line => $eachDomain) {
                 $cleanDomain = $this->getHost($eachDomain);
-                $cleanDomain = str_replace('www.', '', $cleanDomain);
+		$cleanDomain = preg_replace('/^www\./', '', $cleanDomain);
                 $cleanDomain = Punycode::encodeHostName($cleanDomain);
                 if ($cleanDomain) {
                     if ($eachDomain != $cleanDomain) {
