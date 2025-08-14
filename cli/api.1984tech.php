@@ -220,6 +220,20 @@ class OrwellWorld {
     protected $SquidPath = '';
 
     /**
+     * RPZ BIND9 zone name
+     *
+     * @var string
+     */
+    protected $dnsRPZzoneName='';
+
+    /**
+     * RPZ BIND9 zone file
+     *
+     * @var string
+     */
+    protected $dnsRPZzoneFile='';
+
+    /**
      * Primary configuration file path/name
      */
     const CONFIG_PATH = '1984tech.ini';
