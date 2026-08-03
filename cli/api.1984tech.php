@@ -1039,6 +1039,114 @@ class OrwellWorld {
     }
 
     /**
+     * Syncs local domains.txt with multiple remote/local sources and appends
+     * unique valid domains to the end of the local file.
+     *
+     * @param array $sources list of HTTP URLs or filesystem paths
+     * @param bool $dryRun if true - only report new domains without writing
+     *
+     * @return void
+     */
+    public function autoSync($sources = array(), $dryRun = false) {
+        require_once('api.punycode.php');
+        $dataSource = 'domains.txt';
+        $localDomains = $this->loadDomainsSource($dataSource);
+        $localIndex = array();
+        $newList = '';
+        $uniq = array();
+        $totalNew = 0;
+        $totalInvalid = 0;
+        $totalSkipped = 0;
+
+        if (empty($sources)) {
+            print('Error: empty domain sources list' . PHP_EOL);
+            return;
+        }
+
+        if (!empty($localDomains)) {
+            foreach ($localDomains as $eachDomain) {
+                $localIndex[strtolower($eachDomain)] = 1;
+            }
+        }
+
+        $localCount = sizeof($localIndex);
+        print('Local domains base: ' . $dataSource . ' (' . $localCount . ' domains)' . PHP_EOL);
+        print('Sources to sync: ' . sizeof($sources) . PHP_EOL);
+        print(' ===========================' . PHP_EOL);
+
+        foreach ($sources as $fileUrl) {
+            $sourceNew = 0;
+            $sourceInvalid = 0;
+            $sourceSkipped = 0;
+            print('Fetching: ' . $fileUrl . PHP_EOL);
+            @$rawNewDomains = file_get_contents($fileUrl);
+            if (empty($rawNewDomains)) {
+                print('|  SKIPPED: empty or unreachable source' . PHP_EOL);
+                print(' ===========================' . PHP_EOL);
+                continue;
+            }
+
+            $newDomains = explode(PHP_EOL, $rawNewDomains);
+            print(sizeof($newDomains) . ' lines in source' . PHP_EOL);
+
+            foreach ($newDomains as $eachDomain) {
+                $eachDomain = trim($eachDomain);
+                if ($eachDomain === '') {
+                    continue;
+                }
+
+                $cleanDomain = $this->getHost($eachDomain);
+                $cleanDomain = preg_replace('/^www\./', '', $cleanDomain);
+                $cleanDomain = Punycode::encodeHostName($cleanDomain);
+                if (empty($cleanDomain) or !$this->isDomainValid($cleanDomain)) {
+                    $sourceInvalid++;
+                    $totalInvalid++;
+                    continue;
+                }
+
+                $domainKey = strtolower($cleanDomain);
+                if (isset($localIndex[$domainKey]) or isset($uniq[$domainKey])) {
+                    $sourceSkipped++;
+                    $totalSkipped++;
+                    continue;
+                }
+
+                $newList .= $cleanDomain . PHP_EOL;
+                $uniq[$domainKey] = 1;
+                $sourceNew++;
+                $totalNew++;
+            }
+
+            print('New from this source: ' . $sourceNew . PHP_EOL);
+            print('Already present: ' . $sourceSkipped . PHP_EOL);
+            print('Invalid skipped: ' . $sourceInvalid . PHP_EOL);
+            print(' ===========================' . PHP_EOL);
+        }
+
+        if ($totalNew > 0) {
+            if ($dryRun) {
+                print($newList);
+                print('Dry-run: ' . $totalNew . ' domains would be appended to ' . $dataSource . PHP_EOL);
+            } else {
+                file_put_contents($dataSource, $newList, FILE_APPEND);
+                print('Appended ' . $totalNew . ' domains to ' . $dataSource . PHP_EOL);
+            }
+        }
+
+        print(' ================================================' . PHP_EOL);
+        print('|  AUTOSYNC FINISHED: ' . $totalNew . ' NEW DOMAINS' . ($dryRun ? ' (dry-run)' : '') . ' |' . PHP_EOL);
+        print('|  skipped existing: ' . $totalSkipped . ' / invalid: ' . $totalInvalid . ' |' . PHP_EOL);
+        print('=================================================' . PHP_EOL);
+
+        if (!$dryRun) {
+            print(PHP_EOL);
+            $this->uniqueCheck(true);
+            print(PHP_EOL);
+            $this->validityCheck(true);
+        }
+    }
+
+    /**
      * Extracts domain name from shitty URLs
      * 
      * @param string $address
