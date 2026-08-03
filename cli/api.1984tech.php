@@ -75,7 +75,7 @@ class OrwellWorld {
     /**
      * Contains ipfw binary path
      *
-     * @var 
+     * @var string
      */
     protected $ipfwPath = '';
 
@@ -313,6 +313,8 @@ class OrwellWorld {
     /**
      * Returns domains list array from dataSource file as lineIndex=>domain
      * 
+     * @param string $dataSource
+     * 
      * @return array
      */
     protected function loadDomainsSource($dataSource) {
@@ -502,6 +504,8 @@ class OrwellWorld {
 
     /**
      * Returns Squid configs file file
+     * 
+     * @param string $config
      *
      * @return string
      */
@@ -515,8 +519,12 @@ class OrwellWorld {
 
     /**
      * Rewrites Squid Configs files
+     * 
+     * @param string $config
+     * @param string $squidCA
+     * @param string $ERR_1984TECH
      *
-     * @return string/void - generated filename
+     * @return string|void - generated filename
      */
     public function saveSquid($config, $squidCA, $ERR_1984TECH) {
         $result = '';
@@ -1055,6 +1063,8 @@ class OrwellWorld {
 
     /**
      * Basic domain names validator
+     * 
+     * @param string $domainName
      * 
      * @return bool
      */
