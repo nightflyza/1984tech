@@ -29,13 +29,18 @@
         </div>
 
         <?php
-        $logFile = 'log/redirect.log';
-        $curDate = date("Y-m-d H:i:s");
-        $remoteIp = $_SERVER['REMOTE_ADDR'];
-        $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
-        $logData = $remoteIp . ' [' . $curDate . '] ' . $actualUrl."\n";
+        $debug = false;
 
-        file_put_contents($logFile, $logData, FILE_APPEND | LOCK_EX);
+        
+        if ($debug) {
+            $logFile = 'log/redirect.log';
+            $curDate = date("Y-m-d H:i:s");
+            $remoteIp = $_SERVER['REMOTE_ADDR'];
+            $actualUrl = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+            $logData = $remoteIp . ' [' . $curDate . '] ' . $actualUrl."\n";
+
+            file_put_contents($logFile, $logData, FILE_APPEND | LOCK_EX);
+        }
         ?>
 
     </body>
