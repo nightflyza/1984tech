@@ -1,25 +1,3 @@
-<?php
-$debug = false;
-
-$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
-$uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
-$remoteIp = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-$remotePort = isset($_SERVER['REMOTE_PORT']) ? $_SERVER['REMOTE_PORT'] : '';
-$scheme = (!empty($_SERVER['HTTPS']) and $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-$actualUrl = $scheme . '://' . $host . $uri;
-$accessTime = date('Y-m-d H:i:s');
-
-if ($debug) {
-    $logFile = 'log/redirect.log';
-    $curDate = date('Y-m-d H:i:s');
-    $logData = $remoteIp . ' [' . $curDate . '] ' . $actualUrl . "\n";
-    file_put_contents($logFile, $logData, FILE_APPEND | LOCK_EX);
-}
-
-function escapeHtml($value) {
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-}
-?>
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -180,6 +158,26 @@ function escapeHtml($value) {
                 x.style.display = 'none';
             }
         }
+
+        function pad2(value) {
+            return (value < 10 ? '0' : '') + value;
+        }
+
+        function formatAccessTime(date) {
+            return date.getFullYear() + '-' +
+                pad2(date.getMonth() + 1) + '-' +
+                pad2(date.getDate()) + ' ' +
+                pad2(date.getHours()) + ':' +
+                pad2(date.getMinutes()) + ':' +
+                pad2(date.getSeconds());
+        }
+
+        function fillTechInfo() {
+            var now = new Date();
+            document.getElementById('tech-domain').textContent = 'Domain: ' + window.location.hostname;
+            document.getElementById('tech-url').textContent = 'URL: ' + window.location.href;
+            document.getElementById('tech-time').textContent = 'Time of access: ' + formatAccessTime(now);
+        }
     </script>
 
     <div class="container-outer">
@@ -214,22 +212,16 @@ function escapeHtml($value) {
                                 <th style="width:45%">Що робити?</th>
                             </tr>
                             <tr>
-                                <td id="toleft">Domain: <?php print(escapeHtml($host)); ?></td>
-                                <td rowspan="5" id="abuse">Якщо Ви впевнені, що даний домен не є загрозливим 
+                                <td id="tech-domain">Domain: </td>
+                                <td rowspan="3" id="abuse">Якщо Ви впевнені, що даний домен не є загрозливим 
                                     та фільтрація відбувається помилково, просимо повідомити про це за адресою: 01220, м. Київ, вул. Банкова, 11.
                                 Або ж телефонувати за номером - (044) 255-73-33. </td>
                             </tr>
                             <tr>
-                                <td id="toleft">Client IP: <?php print(escapeHtml($remoteIp)); ?></td>
+                                <td id="tech-url">URL: </td>
                             </tr>
                             <tr>
-                                <td id="toleft">Client Port: <?php print(escapeHtml($remotePort)); ?></td>
-                            </tr>
-                            <tr>
-                                <td id="toleft">URL: <?php print(escapeHtml($actualUrl)); ?></td>
-                            </tr>
-                            <tr>
-                                <td id="toleft">Time of access: <?php print(escapeHtml($accessTime)); ?></td>
+                                <td id="tech-time">Time of access: </td>
                             </tr>
                         </tbody>
                     </table>
@@ -237,5 +229,8 @@ function escapeHtml($value) {
             </div>
         </div>
     </div>
+    <script>
+        fillTechInfo();
+    </script>
 </body>
 </html>
